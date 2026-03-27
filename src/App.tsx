@@ -3,8 +3,15 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import { AppLayout } from "@/components/layout/AppLayout";
+import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
+import Cupons from "./pages/Cupons";
+import Solicitacoes from "./pages/Solicitacoes";
+import Equipe from "./pages/Equipe";
+import Desafios from "./pages/Desafios";
+import Relatorios from "./pages/Relatorios";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +23,14 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route element={<AppLayout><Routes><Route path="*" element={null} /></Routes></AppLayout>}>
+          </Route>
+          <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
+          <Route path="/cupons" element={<AppLayout><Cupons /></AppLayout>} />
+          <Route path="/solicitacoes" element={<AppLayout><Solicitacoes /></AppLayout>} />
+          <Route path="/equipe" element={<AppLayout><Equipe /></AppLayout>} />
+          <Route path="/desafios" element={<AppLayout><Desafios /></AppLayout>} />
+          <Route path="/relatorios" element={<AppLayout><Relatorios /></AppLayout>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
