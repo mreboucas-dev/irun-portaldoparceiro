@@ -57,7 +57,7 @@ export default function Relatorios() {
             <ArrowRight className="w-8 h-8 text-accent" />
             <div className="text-center">
               <p className="text-sm text-muted-foreground mb-2">Depois</p>
-              <p className="text-4xl font-bold text-emerald-500">{current.depois}{current.unit === "%" ? "%" : ""}</p>
+              <p className="text-4xl font-bold" style={{ color: "hsl(150 60% 45%)" }}>{current.depois}{current.unit === "%" ? "%" : ""}</p>
               {current.unit === "ton" && <p className="text-xs text-muted-foreground">ton/mês</p>}
             </div>
           </div>

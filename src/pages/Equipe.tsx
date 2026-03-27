@@ -76,7 +76,7 @@ export default function Equipe() {
                 Selecionar arquivo
               </Button>
               {uploaded && (
-                <p className="text-sm text-emerald-500 mt-4 font-medium">✓ 5 colaboradores importados com sucesso!</p>
+                <p className="text-sm mt-4 font-medium" style={{ color: "hsl(150 60% 45%)" }}>✓ 5 colaboradores importados com sucesso!</p>
               )}
             </div>
           </DialogContent>

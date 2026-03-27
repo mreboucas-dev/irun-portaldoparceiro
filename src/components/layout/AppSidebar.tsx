@@ -52,7 +52,7 @@ export function AppSidebar() {
           </div>
         )}
 
-        <SidebarGroup defaultOpen>
+        <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground/50 text-xs uppercase tracking-wider">
             {!collapsed && "Geral"}
           </SidebarGroupLabel>
@@ -81,7 +81,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup defaultOpen>
+        <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground/50 text-xs uppercase tracking-wider">
             {!collapsed && "Corporativo"}
           </SidebarGroupLabel>
