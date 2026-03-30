@@ -33,7 +33,6 @@ export default function Relatorios() {
         </Button>
       </div>
 
-      {/* Selo */}
       <GlassCard className="animate-fade-in-up flex items-center gap-3 sm:gap-4">
         <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full gold-gradient flex items-center justify-center shadow-lg flex-shrink-0">
           <Award className="w-6 h-6 sm:w-8 sm:h-8 text-primary-foreground" />
@@ -45,7 +44,6 @@ export default function Relatorios() {
       </GlassCard>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        {/* Antes e Depois carousel */}
         <GlassCard className="animate-fade-in-up stagger-2">
           <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-foreground">Antes e Depois — {current.label}</h3>
           <div className="flex items-center justify-center gap-4 sm:gap-8 py-6 sm:py-8">
@@ -72,15 +70,20 @@ export default function Relatorios() {
           </div>
         </GlassCard>
 
-        {/* Radar Chart */}
         <GlassCard className="animate-fade-in-up stagger-3">
           <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-foreground">Score de Saúde Coletivo</h3>
           <ChartContainer config={radarConfig} className="h-[240px] sm:h-[300px]">
             <RadarChart data={saudeColetiva} outerRadius="65%">
-              <PolarGrid stroke="hsl(var(--border))" />
-              <PolarAngleAxis dataKey="area" stroke="hsl(var(--muted-foreground))" fontSize={10} />
+              <defs>
+                <linearGradient id="gradRadar" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#1a3a8f" stopOpacity={0.6} />
+                  <stop offset="100%" stopColor="#daa520" stopOpacity={0.15} />
+                </linearGradient>
+              </defs>
+              <PolarGrid stroke="rgba(255,255,255,0.08)" />
+              <PolarAngleAxis dataKey="area" stroke="rgba(255,255,255,0.4)" fontSize={10} />
               <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-              <Radar dataKey="score" stroke="var(--color-score)" fill="var(--color-score)" fillOpacity={0.3} strokeWidth={2} />
+              <Radar dataKey="score" stroke="#3b82f6" fill="url(#gradRadar)" strokeWidth={2} />
             </RadarChart>
           </ChartContainer>
           <p className="text-xs text-muted-foreground text-center mt-2">
@@ -89,7 +92,6 @@ export default function Relatorios() {
         </GlassCard>
       </div>
 
-      {/* LGPD Placeholder */}
       <GlassCard className="animate-fade-in-up stagger-4 border-accent/30">
         <div className="flex items-start sm:items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">

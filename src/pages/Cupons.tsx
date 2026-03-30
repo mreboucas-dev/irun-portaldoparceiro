@@ -2,7 +2,7 @@ import { cuponsData, heatmapData } from "@/data/mockData";
 import { GlassCard } from "@/components/GlassCard";
 import { Badge } from "@/components/ui/badge";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { BarChart, Bar, XAxis, YAxis } from "recharts";
 
 const statusColors: Record<string, string> = {
   Ativo: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
@@ -56,11 +56,16 @@ export default function Cupons() {
           <h3 className="text-base sm:text-lg font-semibold mb-4 text-foreground">CTR por Cupom</h3>
           <ChartContainer config={ctrConfig} className="h-[220px] sm:h-[250px]">
             <BarChart data={ctrData} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={11} />
-              <YAxis dataKey="nome" type="category" width={55} stroke="hsl(var(--muted-foreground))" fontSize={9} />
+              <defs>
+                <linearGradient id="gradCtr" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#c4952a" />
+                  <stop offset="100%" stopColor="#daa520" />
+                </linearGradient>
+              </defs>
+              <XAxis type="number" stroke="rgba(255,255,255,0.4)" fontSize={11} axisLine={false} tickLine={false} />
+              <YAxis dataKey="nome" type="category" width={55} stroke="rgba(255,255,255,0.4)" fontSize={9} axisLine={false} tickLine={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="ctr" fill="var(--color-ctr)" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="ctr" fill="url(#gradCtr)" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ChartContainer>
         </GlassCard>

@@ -2,7 +2,7 @@ import { kpiData, resgatesPorCategoria, engajamentoSemanal } from "@/data/mockDa
 import { KpiCard } from "@/components/KpiCard";
 import { GlassCard } from "@/components/GlassCard";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, LineChart, Line } from "recharts";
 
 const barChartConfig = {
   alimentacao: { label: "Alimentação", color: "hsl(231 85% 32%)" },
@@ -37,14 +37,31 @@ export default function Dashboard() {
           <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Resgates por Categoria</h3>
           <ChartContainer config={barChartConfig} className="h-[240px] sm:h-[320px]">
             <BarChart data={resgatesPorCategoria}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="mes" stroke="hsl(var(--muted-foreground))" fontSize={11} tickMargin={4} />
-              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} width={30} />
+              <defs>
+                <linearGradient id="gradAlimentacao" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#1a3a8f" />
+                  <stop offset="100%" stopColor="#0b2297" />
+                </linearGradient>
+                <linearGradient id="gradTransporte" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#daa520" />
+                  <stop offset="100%" stopColor="#c4952a" />
+                </linearGradient>
+                <linearGradient id="gradLazer" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#3b82f6" />
+                  <stop offset="100%" stopColor="#1a3a8f" />
+                </linearGradient>
+                <linearGradient id="gradSaude" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#daa520" />
+                  <stop offset="100%" stopColor="#b8860b" />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="mes" stroke="rgba(255,255,255,0.4)" fontSize={11} tickMargin={4} axisLine={false} tickLine={false} />
+              <YAxis stroke="rgba(255,255,255,0.4)" fontSize={10} width={30} axisLine={false} tickLine={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="alimentacao" stackId="a" fill="var(--color-alimentacao)" radius={[0, 0, 0, 0]} />
-              <Bar dataKey="transporte" stackId="a" fill="var(--color-transporte)" />
-              <Bar dataKey="lazer" stackId="a" fill="var(--color-lazer)" />
-              <Bar dataKey="saude" stackId="a" fill="var(--color-saude)" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="alimentacao" stackId="a" fill="url(#gradAlimentacao)" radius={[0, 0, 0, 0]} />
+              <Bar dataKey="transporte" stackId="a" fill="url(#gradTransporte)" />
+              <Bar dataKey="lazer" stackId="a" fill="url(#gradLazer)" />
+              <Bar dataKey="saude" stackId="a" fill="url(#gradSaude)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ChartContainer>
         </GlassCard>
@@ -53,12 +70,21 @@ export default function Dashboard() {
           <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Engajamento Semanal</h3>
           <ChartContainer config={lineChartConfig} className="h-[240px] sm:h-[320px]">
             <LineChart data={engajamentoSemanal}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="semana" stroke="hsl(var(--muted-foreground))" fontSize={11} tickMargin={4} />
-              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} width={30} />
+              <defs>
+                <linearGradient id="gradAtivos" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#1a3a8f" />
+                  <stop offset="100%" stopColor="#3b82f6" />
+                </linearGradient>
+                <linearGradient id="gradResgates" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#c4952a" />
+                  <stop offset="100%" stopColor="#daa520" />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="semana" stroke="rgba(255,255,255,0.4)" fontSize={11} tickMargin={4} axisLine={false} tickLine={false} />
+              <YAxis stroke="rgba(255,255,255,0.4)" fontSize={10} width={30} axisLine={false} tickLine={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Line type="monotone" dataKey="ativos" stroke="var(--color-ativos)" strokeWidth={2} dot={{ r: 3 }} />
-              <Line type="monotone" dataKey="resgates" stroke="var(--color-resgates)" strokeWidth={2} dot={{ r: 3 }} />
+              <Line type="monotone" dataKey="ativos" stroke="url(#gradAtivos)" strokeWidth={2.5} dot={{ r: 3, fill: "#3b82f6" }} strokeLinecap="round" />
+              <Line type="monotone" dataKey="resgates" stroke="url(#gradResgates)" strokeWidth={2.5} dot={{ r: 3, fill: "#daa520" }} strokeLinecap="round" />
             </LineChart>
           </ChartContainer>
         </GlassCard>
