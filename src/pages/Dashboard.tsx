@@ -22,8 +22,8 @@ export default function Dashboard() {
   return (
     <div className="space-y-5 sm:space-y-8">
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Visão geral do impacto iRun</p>
+        <h1 className="text-xl sm:text-2xl font-bold text-white">Dashboard</h1>
+        <p className="text-sm text-white/60">Visão geral do impacto iRun</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -34,7 +34,7 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8">
         <GlassCard className="animate-fade-in-up stagger-4">
-          <h3 className="text-base sm:text-lg font-semibold mb-4 text-foreground">Resgates por Categoria</h3>
+          <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Resgates por Categoria</h3>
           <ChartContainer config={barChartConfig} className="h-[240px] sm:h-[320px]">
             <BarChart data={resgatesPorCategoria}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -50,7 +50,7 @@ export default function Dashboard() {
         </GlassCard>
 
         <GlassCard className="animate-fade-in-up stagger-5">
-          <h3 className="text-base sm:text-lg font-semibold mb-4 text-foreground">Engajamento Semanal</h3>
+          <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Engajamento Semanal</h3>
           <ChartContainer config={lineChartConfig} className="h-[240px] sm:h-[320px]">
             <LineChart data={engajamentoSemanal}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
