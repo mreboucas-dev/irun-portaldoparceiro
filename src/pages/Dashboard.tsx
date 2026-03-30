@@ -67,7 +67,7 @@ export default function Dashboard() {
         </GlassCard>
 
         <GlassCard className="animate-fade-in-up stagger-5">
-          <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Engajamento Semanal</h3>
+          <h3 className="text-base sm:text-lg font-semibold mb-4 text-foreground">Engajamento Semanal</h3>
           <ChartContainer config={lineChartConfig} className="h-[240px] sm:h-[320px]">
             <LineChart data={engajamentoSemanal}>
               <defs>
