@@ -1,3 +1,4 @@
+import logoIrun from "@/assets/logo-irun.png";
 import {
   LayoutDashboard,
   Ticket,
@@ -43,10 +44,8 @@ export function AppSidebar() {
       <SidebarContent className="glass-sidebar pt-4">
         {!collapsed && (
           <div className="px-6 pb-4 mb-2">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg gold-gradient flex items-center justify-center">
-                <span className="text-sm font-bold text-sidebar-primary-foreground">iR</span>
-              </div>
+            <div className="flex items-center gap-3">
+              <img src={logoIrun} alt="iRun Clube+" className="w-10 h-10 rounded-xl" />
               <span className="text-lg font-bold text-sidebar-foreground">iRun</span>
             </div>
           </div>
