@@ -65,26 +65,33 @@ export const solicitacoesData = [
   ]},
 ];
 
-// Equipe (colaboradores)
+// Equipe (colaboradores) — sem campo "nível" individual (LGPD)
 export const equipeData = [
-  { id: 1, nome: "Ana Silva", email: "ana.s@empresa.com", nivel: "Atleta", passos: 12500, pontos: 890 },
-  { id: 2, nome: "Bruno Costa", email: "bruno.c@empresa.com", nivel: "Ativo", passos: 8200, pontos: 650 },
-  { id: 3, nome: "Carla Mendes", email: "carla.m@empresa.com", nivel: "Sedentário", passos: 3100, pontos: 210 },
-  { id: 4, nome: "Diego Oliveira", email: "diego.o@empresa.com", nivel: "Ativo", passos: 7800, pontos: 580 },
-  { id: 5, nome: "Elena Souza", email: "elena.s@empresa.com", nivel: "Atleta", passos: 15200, pontos: 950 },
-  { id: 6, nome: "Felipe Santos", email: "felipe.s@empresa.com", nivel: "Ativo", passos: 6500, pontos: 430 },
-  { id: 7, nome: "Gabriela Lima", email: "gabi.l@empresa.com", nivel: "Sedentário", passos: 2800, pontos: 180 },
-  { id: 8, nome: "Henrique Rocha", email: "henrique.r@empresa.com", nivel: "Atleta", passos: 14000, pontos: 920 },
-  { id: 9, nome: "Isabela Ferreira", email: "isa.f@empresa.com", nivel: "Ativo", passos: 9100, pontos: 710 },
-  { id: 10, nome: "João Pedro", email: "joao.p@empresa.com", nivel: "Sedentário", passos: 4200, pontos: 290 },
+  { id: 1, nome: "Ana Silva", email: "ana.s@empresa.com", distanciaKm: 9.8, calorias: 620, tempoAtividadeMin: 75, pontos: 890 },
+  { id: 2, nome: "Bruno Costa", email: "bruno.c@empresa.com", distanciaKm: 6.4, calorias: 410, tempoAtividadeMin: 52, pontos: 650 },
+  { id: 3, nome: "Carla Mendes", email: "carla.m@empresa.com", distanciaKm: 2.1, calorias: 180, tempoAtividadeMin: 20, pontos: 210 },
+  { id: 4, nome: "Diego Oliveira", email: "diego.o@empresa.com", distanciaKm: 5.9, calorias: 385, tempoAtividadeMin: 48, pontos: 580 },
+  { id: 5, nome: "Elena Souza", email: "elena.s@empresa.com", distanciaKm: 12.3, calorias: 780, tempoAtividadeMin: 92, pontos: 950 },
+  { id: 6, nome: "Felipe Santos", email: "felipe.s@empresa.com", distanciaKm: 4.8, calorias: 310, tempoAtividadeMin: 38, pontos: 430 },
+  { id: 7, nome: "Gabriela Lima", email: "gabi.l@empresa.com", distanciaKm: 1.8, calorias: 140, tempoAtividadeMin: 15, pontos: 180 },
+  { id: 8, nome: "Henrique Rocha", email: "henrique.r@empresa.com", distanciaKm: 11.2, calorias: 720, tempoAtividadeMin: 88, pontos: 920 },
+  { id: 9, nome: "Isabela Ferreira", email: "isa.f@empresa.com", distanciaKm: 7.1, calorias: 460, tempoAtividadeMin: 58, pontos: 710 },
+  { id: 10, nome: "João Pedro", email: "joao.p@empresa.com", distanciaKm: 3.0, calorias: 220, tempoAtividadeMin: 28, pontos: 290 },
 ];
 
 export const csvSimulatedNames = [
-  { nome: "Lucas Martins", email: "lucas.m@empresa.com", nivel: "Ativo", passos: 7400, pontos: 520 },
-  { nome: "Marina Alves", email: "marina.a@empresa.com", nivel: "Sedentário", passos: 3500, pontos: 240 },
-  { nome: "Nicolas Barbosa", email: "nicolas.b@empresa.com", nivel: "Atleta", passos: 11800, pontos: 870 },
-  { nome: "Olivia Campos", email: "olivia.c@empresa.com", nivel: "Ativo", passos: 6900, pontos: 480 },
-  { nome: "Paulo Ribeiro", email: "paulo.r@empresa.com", nivel: "Ativo", passos: 8600, pontos: 630 },
+  { nome: "Lucas Martins", email: "lucas.m@empresa.com", distanciaKm: 5.6, calorias: 370, tempoAtividadeMin: 45, pontos: 520 },
+  { nome: "Marina Alves", email: "marina.a@empresa.com", distanciaKm: 2.4, calorias: 190, tempoAtividadeMin: 22, pontos: 240 },
+  { nome: "Nicolas Barbosa", email: "nicolas.b@empresa.com", distanciaKm: 9.5, calorias: 610, tempoAtividadeMin: 72, pontos: 870 },
+  { nome: "Olivia Campos", email: "olivia.c@empresa.com", distanciaKm: 5.2, calorias: 340, tempoAtividadeMin: 42, pontos: 480 },
+  { nome: "Paulo Ribeiro", email: "paulo.r@empresa.com", distanciaKm: 6.8, calorias: 430, tempoAtividadeMin: 55, pontos: 630 },
+];
+
+// Distribuição de saúde corporativa — dados agregados e anônimos (LGPD)
+export const distribuicaoSaude = [
+  { nome: "Sedentários", valor: 30, cor: "#64748b" },
+  { nome: "Ativos", valor: 50, cor: "#0b2297" },
+  { nome: "Atletas", valor: 20, cor: "#daa520" },
 ];
 
 // Desafios
