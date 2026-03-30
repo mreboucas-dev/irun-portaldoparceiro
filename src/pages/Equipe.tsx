@@ -77,7 +77,7 @@ export default function Equipe() {
       <GlassCard className="animate-fade-in-up">
         <h2 className="text-base sm:text-lg font-semibold text-foreground mb-1">Distribuição de Saúde Corporativa</h2>
         <p className="text-xs text-muted-foreground mb-4">Dados agregados e anônimos — em conformidade com a LGPD</p>
-        <div className="h-[220px] sm:h-[260px]">
+        <div className="h-[220px] sm:h-[260px] overflow-hidden">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -86,8 +86,8 @@ export default function Equipe() {
                 nameKey="nome"
                 cx="50%"
                 cy="50%"
-                outerRadius={70}
-                innerRadius={40}
+                outerRadius={60}
+                innerRadius={30}
                 paddingAngle={4}
                 strokeWidth={0}
                 label={({ nome, valor }) => `${valor}%`}

@@ -76,7 +76,7 @@ export default function Relatorios() {
         <GlassCard className="animate-fade-in-up stagger-3">
           <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-foreground">Score de Saúde Coletivo</h3>
           <ChartContainer config={radarConfig} className="h-[240px] sm:h-[300px]">
-            <RadarChart data={saudeColetiva} outerRadius="70%">
+            <RadarChart data={saudeColetiva} outerRadius="65%">
               <PolarGrid stroke="hsl(var(--border))" />
               <PolarAngleAxis dataKey="area" stroke="hsl(var(--muted-foreground))" fontSize={10} />
               <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
