@@ -164,7 +164,7 @@ export default function Equipe() {
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
           <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1"><Users className="w-4 h-4" /> {filtered.length} de {membros.length} colaboradores</p>
         </div>
       </GlassCard>

@@ -80,8 +80,8 @@ export default function Relatorios() {
                   <stop offset="100%" stopColor="#daa520" stopOpacity={0.15} />
                 </linearGradient>
               </defs>
-              <PolarGrid stroke="rgba(255,255,255,0.08)" />
-              <PolarAngleAxis dataKey="area" stroke="rgba(255,255,255,0.4)" fontSize={10} />
+              <PolarGrid stroke="#e2e8f0" />
+              <PolarAngleAxis dataKey="area" stroke="#64748b" fontSize={10} />
               <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
               <Radar dataKey="score" stroke="#3b82f6" fill="url(#gradRadar)" strokeWidth={2} />
             </RadarChart>

@@ -80,8 +80,8 @@ export default function Dashboard() {
                   <stop offset="100%" stopColor="#daa520" />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="semana" stroke="rgba(255,255,255,0.4)" fontSize={11} tickMargin={4} axisLine={false} tickLine={false} />
-              <YAxis stroke="rgba(255,255,255,0.4)" fontSize={10} width={30} axisLine={false} tickLine={false} />
+              <XAxis dataKey="semana" stroke="#94a3b8" fontSize={11} tickMargin={4} axisLine={false} tickLine={false} />
+              <YAxis stroke="#94a3b8" fontSize={10} width={30} axisLine={false} tickLine={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Line type="monotone" dataKey="ativos" stroke="url(#gradAtivos)" strokeWidth={2.5} dot={{ r: 3, fill: "#3b82f6" }} strokeLinecap="round" />
               <Line type="monotone" dataKey="resgates" stroke="url(#gradResgates)" strokeWidth={2.5} dot={{ r: 3, fill: "#daa520" }} strokeLinecap="round" />
