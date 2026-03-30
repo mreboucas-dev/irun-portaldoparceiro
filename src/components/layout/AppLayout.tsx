@@ -13,7 +13,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <SidebarTrigger className="mr-4" />
             <div className="flex items-center gap-2">
               
-              <span className="text-xl font-bold text-primary">iRun</span>
+              
               <span className="text-sm text-muted-foreground">Portal do Parceiro</span>
             </div>
           </header>
