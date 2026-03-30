@@ -39,7 +39,7 @@ export default function Dashboard() {
             <BarChart data={resgatesPorCategoria}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis dataKey="mes" stroke="hsl(var(--muted-foreground))" fontSize={11} tickMargin={4} />
-              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} width={35} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} width={30} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="alimentacao" stackId="a" fill="var(--color-alimentacao)" radius={[0, 0, 0, 0]} />
               <Bar dataKey="transporte" stackId="a" fill="var(--color-transporte)" />
