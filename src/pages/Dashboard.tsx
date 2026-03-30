@@ -55,7 +55,7 @@ export default function Dashboard() {
             <LineChart data={engajamentoSemanal}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis dataKey="semana" stroke="hsl(var(--muted-foreground))" fontSize={11} tickMargin={4} />
-              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} width={35} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} width={30} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Line type="monotone" dataKey="ativos" stroke="var(--color-ativos)" strokeWidth={2} dot={{ r: 3 }} />
               <Line type="monotone" dataKey="resgates" stroke="var(--color-resgates)" strokeWidth={2} dot={{ r: 3 }} />
