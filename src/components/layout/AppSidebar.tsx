@@ -46,7 +46,6 @@ export function AppSidebar() {
           <div className="px-6 pb-4 mb-2">
             <div className="flex items-center gap-3">
               <img src={logoIrun} alt="iRun Clube+" className="w-10 h-10 rounded-xl" />
-              <span className="text-lg font-bold text-sidebar-foreground">iRun</span>
             </div>
           </div>
         )}
