@@ -114,11 +114,11 @@ export default function Equipe() {
               <Tooltip
                 formatter={(value: number) => `${value}%`}
                 contentStyle={{
-                  background: "rgba(11, 34, 151, 0.9)",
-                  border: "1px solid rgba(218, 165, 32, 0.2)",
+                  background: "#ffffff",
+                  border: "1px solid #e2e8f0",
                   borderRadius: "12px",
-                  backdropFilter: "blur(12px)",
-                  color: "#fff",
+                  color: "#0f172a",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                 }}
               />
               <Legend />
