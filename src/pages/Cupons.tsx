@@ -58,7 +58,7 @@ export default function Cupons() {
             <BarChart data={ctrData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={11} />
-              <YAxis dataKey="nome" type="category" width={70} stroke="hsl(var(--muted-foreground))" fontSize={10} />
+              <YAxis dataKey="nome" type="category" width={55} stroke="hsl(var(--muted-foreground))" fontSize={9} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="ctr" fill="var(--color-ctr)" radius={[0, 4, 4, 0]} />
             </BarChart>
