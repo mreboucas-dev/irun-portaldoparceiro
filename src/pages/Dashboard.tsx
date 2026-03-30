@@ -34,7 +34,7 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8">
         <GlassCard className="animate-fade-in-up stagger-4">
-          <h3 className="text-base sm:text-lg font-semibold mb-4 text-foreground">Resgates por Categoria</h3>
+          <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Resgates por Categoria</h3>
           <ChartContainer config={barChartConfig} className="h-[240px] sm:h-[320px]">
             <BarChart data={resgatesPorCategoria}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
