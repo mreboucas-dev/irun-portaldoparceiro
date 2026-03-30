@@ -1,3 +1,4 @@
+import logoIrun from "@/assets/logo-irun.png";
 import {
   LayoutDashboard,
   Ticket,

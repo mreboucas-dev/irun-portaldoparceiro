@@ -1,3 +1,4 @@
+import logoIrun from "@/assets/logo-irun.png";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { PageTransition } from "@/components/PageTransition";
