@@ -1,38 +1,36 @@
 
 
-# Glassmorphism — Cards, Sidebar e Header
+# Gradientes nos Gráficos + Visual Linear.app Minimalista
 
 ## Resumo
-Aplicar estilo glassmorphism com fundo azul marinho escuro (#0b2297) a 85% de opacidade, backdrop-blur de 12px, e borda interna dourada (#daa520) a 20% de opacidade em todos os cards e na sidebar.
+Aplicar gradientes lineares (azul-dourado) nas barras e linhas dos gráficos Recharts, remover grades cinzas (CartesianGrid, PolarGrid), e limpar eixos para um visual minimalista estilo Linear.app.
 
 ## Alterações
 
-### 1. CSS global — `src/index.css`
-- Atualizar `.glass-card` para: `background: rgba(11, 34, 151, 0.85)`, `backdrop-filter: blur(12px)`, `box-shadow: inset 0 0 0 1px rgba(218, 165, 32, 0.2)`, remover `border` externo (substituído pelo inset shadow dourado)
-- Textos internos dos cards passam a ser claros (brancos) — ajustar variáveis `--card` e `--card-foreground` para cores claras
-- Atualizar `--sidebar-background` para azul marinho com transparência (via classe customizada, já que CSS vars não suportam rgba diretamente)
+### 1. `src/pages/Dashboard.tsx`
+- Adicionar SVG `<defs>` com `<linearGradient>` para cada barra (azul→dourado) e para as linhas
+- Remover `<CartesianGrid>` de ambos os gráficos
+- Barras: `fill="url(#gradAlimentacao)"` etc. com gradientes azul (#1a3a8f) → dourado (#daa520)
+- Linhas: `stroke="url(#gradAtivos)"` com gradientes vibrantes, adicionar `strokeLinecap="round"`
+- Eixos XAxis/YAxis: `axisLine={false}` e `tickLine={false}` para visual limpo, cor `rgba(255,255,255,0.4)`
 
-### 2. GlassCard — `src/components/GlassCard.tsx`
-- Remover `border` via Tailwind (agora via box-shadow inset no `.glass-card`)
-- Garantir que textos filhos usem `text-white` ou `text-white/70` para contraste
+### 2. `src/pages/Cupons.tsx`
+- Remover `<CartesianGrid>` do BarChart horizontal
+- Adicionar `<defs>` com gradiente dourado para a barra CTR
+- Eixos: `axisLine={false}`, `tickLine={false}`
 
-### 3. KpiCard — `src/components/KpiCard.tsx`
-- Aplicar mesmas classes `glass-card`
-- Trocar `text-foreground` por `text-white` e `text-muted-foreground` por `text-white/60` para legibilidade sobre fundo escuro
+### 3. `src/pages/Equipe.tsx`
+- PieChart: aplicar gradientes nas células via `<defs>` (azul→dourado para cada fatia)
 
-### 4. Sidebar — `src/components/layout/AppSidebar.tsx`
-- Trocar `bg-sidebar` por classe glassmorphism customizada: fundo azul marinho 85%, blur 12px, borda inset dourada
-- Manter textos claros (já usa `text-sidebar-foreground`)
+### 4. `src/pages/Relatorios.tsx`
+- RadarChart: remover `<PolarGrid>` ou trocar por `stroke="rgba(255,255,255,0.08)"` ultra sutil
+- Radar fill: usar gradiente azul com opacidade
 
-### 5. Header — `src/components/layout/AppLayout.tsx`
-- Aplicar glassmorphism no header: mesmo fundo azul marinho com transparência e blur
-- Borda inferior dourada sutil em vez de `border-border/50`
-
-### 6. Background da página — `src/index.css`
-- Escurecer o `--background` para um tom navy muito escuro (#050d2e) para que o efeito glass se destaque
+### 5. `src/components/ui/table.tsx` (se necessário)
+- Remover/atenuar bordas de linhas da tabela para visual mais limpo
 
 ### Detalhes técnicos
-- O `box-shadow: inset 0 0 0 1px rgba(218, 165, 32, 0.2)` simula uma borda interna dourada sem conflitar com border-radius
-- `backdrop-filter: blur(12px)` aplicado via classe utilitária customizada
-- 6 arquivos editados, zero dependências novas
+- Gradientes definidos inline via SVG `<defs>` dentro de cada chart
+- Cores da marca: Azul `#1a3a8f` / `#0b2297`, Dourado `#daa520` / `#c4952a`
+- 4-5 arquivos editados, zero dependências
 
