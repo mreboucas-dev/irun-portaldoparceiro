@@ -1,6 +1,7 @@
 import { desafiosData, rankingData } from "@/data/mockData";
 import { GlassCard } from "@/components/GlassCard";
 import { Progress } from "@/components/ui/progress";
+import { motion } from "framer-motion";
 
 export default function Desafios() {
   return (
@@ -36,14 +37,21 @@ export default function Desafios() {
       <GlassCard className="animate-fade-in-up stagger-4">
         <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-foreground">🏆 Ranking Geral</h3>
         <div className="space-y-2 sm:space-y-3">
-          {rankingData.map((r) => (
-            <div key={r.pos} className="flex items-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-lg hover:bg-muted/30 transition-colors">
+          {rankingData.map((r, i) => (
+            <motion.div
+              key={r.pos}
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.35, delay: i * 0.05 }}
+              whileHover={{ x: 4, backgroundColor: "hsl(var(--muted) / 0.3)" }}
+              className="flex items-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-lg transition-colors"
+            >
               <span className="text-xl sm:text-2xl w-7 sm:w-8 text-center flex-shrink-0">{r.medalha || `#${r.pos}`}</span>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-foreground text-sm sm:text-base truncate">{r.nome}</p>
               </div>
               <span className="font-bold font-mono text-accent text-sm sm:text-base flex-shrink-0">{r.pontos} pts</span>
-            </div>
+            </motion.div>
           ))}
         </div>
       </GlassCard>
