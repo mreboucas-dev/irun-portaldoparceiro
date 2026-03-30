@@ -8,7 +8,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
-          <header className="h-14 flex items-center border-b border-border/50 px-4 backdrop-blur-sm bg-background/80 sticky top-0 z-10">
+          <header className="h-14 flex items-center px-4 glass-header sticky top-0 z-10">
             <SidebarTrigger className="mr-4" />
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold text-primary">iRun</span>

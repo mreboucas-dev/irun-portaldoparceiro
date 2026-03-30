@@ -22,8 +22,8 @@ export default function Dashboard() {
   return (
     <div className="space-y-5 sm:space-y-8">
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Visão geral do impacto iRun</p>
+        <h1 className="text-xl sm:text-2xl font-bold text-white">Dashboard</h1>
+        <p className="text-sm text-white/60">Visão geral do impacto iRun</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">

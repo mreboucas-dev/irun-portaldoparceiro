@@ -30,8 +30,8 @@ export function KpiCard({ label, value, trend, icon, delay = 0 }: KpiCardProps) 
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-muted-foreground mb-1">{label}</p>
-          <p className="text-2xl sm:text-3xl font-bold text-foreground">{value}</p>
+          <p className="text-sm text-white/60 mb-1">{label}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-white">{value}</p>
           <motion.span
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
