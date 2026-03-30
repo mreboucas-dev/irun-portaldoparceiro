@@ -20,22 +20,22 @@ export default function Dashboard() {
   const kpis = Object.values(kpiData);
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-5 sm:space-y-8">
       <div>
         <h1 className="text-xl sm:text-2xl font-bold text-foreground">Dashboard</h1>
         <p className="text-sm text-muted-foreground">Visão geral do impacto iRun</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {kpis.map((kpi, i) => (
           <KpiCard key={kpi.label} {...kpi} delay={i * 100} />
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8">
         <GlassCard className="animate-fade-in-up stagger-4">
           <h3 className="text-base sm:text-lg font-semibold mb-4 text-foreground">Resgates por Categoria</h3>
-          <ChartContainer config={barChartConfig} className="h-[220px] sm:h-[300px]">
+          <ChartContainer config={barChartConfig} className="h-[240px] sm:h-[320px]">
             <BarChart data={resgatesPorCategoria}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis dataKey="mes" stroke="hsl(var(--muted-foreground))" fontSize={11} tickMargin={4} />
@@ -51,7 +51,7 @@ export default function Dashboard() {
 
         <GlassCard className="animate-fade-in-up stagger-5">
           <h3 className="text-base sm:text-lg font-semibold mb-4 text-foreground">Engajamento Semanal</h3>
-          <ChartContainer config={lineChartConfig} className="h-[220px] sm:h-[300px]">
+          <ChartContainer config={lineChartConfig} className="h-[240px] sm:h-[320px]">
             <LineChart data={engajamentoSemanal}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis dataKey="semana" stroke="hsl(var(--muted-foreground))" fontSize={11} tickMargin={4} />
