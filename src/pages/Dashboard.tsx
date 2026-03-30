@@ -55,8 +55,8 @@ export default function Dashboard() {
                   <stop offset="100%" stopColor="#b8860b" />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="mes" stroke="rgba(255,255,255,0.4)" fontSize={11} tickMargin={4} axisLine={false} tickLine={false} />
-              <YAxis stroke="rgba(255,255,255,0.4)" fontSize={10} width={30} axisLine={false} tickLine={false} />
+              <XAxis dataKey="mes" stroke="#94a3b8" fontSize={11} tickMargin={4} axisLine={false} tickLine={false} />
+              <YAxis stroke="#94a3b8" fontSize={10} width={30} axisLine={false} tickLine={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="alimentacao" stackId="a" fill="url(#gradAlimentacao)" radius={[0, 0, 0, 0]} />
               <Bar dataKey="transporte" stackId="a" fill="url(#gradTransporte)" />
