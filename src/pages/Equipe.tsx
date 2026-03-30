@@ -149,7 +149,7 @@ export default function Equipe() {
             </TableHeader>
             <TableBody>
               {filtered.map((m) => (
-                <TableRow key={m.id} className="hover:bg-white/5 transition-colors">
+                <TableRow key={m.id} className="hover:bg-muted/50 transition-colors">
                   <TableCell className="font-medium">
                     <span>{m.nome}</span>
                     <span className="block sm:hidden text-xs text-muted-foreground">{m.email}</span>
