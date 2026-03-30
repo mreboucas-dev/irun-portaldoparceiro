@@ -26,7 +26,7 @@ export function KpiCard({ label, value, trend, icon, delay = 0 }: KpiCardProps) 
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.5, delay: delay / 1000, ease: [0.25, 0.46, 0.45, 0.94] }}
       whileHover={{ y: -3, boxShadow: "0 14px 36px -8px hsl(var(--primary) / 0.15)" }}
-      className="glass-card rounded-xl p-6 transition-colors duration-200"
+      className="glass-card rounded-3xl p-5 sm:p-8 transition-colors duration-200"
     >
       <div className="flex items-start justify-between">
         <div>

@@ -15,7 +15,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <span className="text-sm text-muted-foreground">Portal do Parceiro</span>
             </div>
           </header>
-          <main className="flex-1 overflow-auto p-3 sm:p-6">
+          <main className="flex-1 overflow-auto p-4 sm:p-8">
             <PageTransition>
               {children}
             </PageTransition>
