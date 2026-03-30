@@ -1,40 +1,53 @@
 
 
-# Correção de Gráficos no Mobile — Overflow
+# Refatoração Bento Box + Plus Jakarta Sans + Design Spacing
 
-## Problema
-Os gráficos transbordam dos cards no mobile (390px). A causa raiz é dupla:
-1. `ChartContainer` aplica `aspect-video` (16:9) que força largura mínima maior que o viewport
-2. `GlassCard` tem `p-6` fixo, reduzindo o espaço disponível para os gráficos
+## Resumo
+Transformar o dashboard em layout Bento Grid com células de tamanhos variados, trocar a fonte global para Plus Jakarta Sans, aumentar border-radius para 24px e ampliar espaçamento entre elementos.
 
-## Correções
+## Alterações
 
-### 1. `src/components/GlassCard.tsx`
-- Reduzir padding no mobile: `p-4 sm:p-6`
-- Adicionar `overflow-hidden` para conter qualquer overflow filho
+### 1. Fonte global — `src/index.css` + `tailwind.config.ts`
+- Trocar import do Google Fonts de `Inter` para `Plus Jakarta Sans` (weights 400-800)
+- Atualizar `fontFamily.sans` no Tailwind para `['Plus Jakarta Sans', 'sans-serif']`
+- Atualizar `body` font-family no CSS
 
-### 2. `src/components/ui/chart.tsx` (ChartContainer)
-- Remover `aspect-video` padrão, substituir por `aspect-auto` — as páginas já definem alturas explícitas (`h-[220px]`)
-- Adicionar `w-full overflow-hidden` ao container
+### 2. Border-radius global — `src/index.css`
+- Alterar `--radius` de `0.75rem` para `1.5rem` (24px)
 
-### 3. `src/pages/Dashboard.tsx`
-- Envolver cada chart em `div` com `overflow-hidden w-full`
-- Reduzir `YAxis width` para `30` e `fontSize` para `10` no mobile
+### 3. GlassCard — `src/components/GlassCard.tsx`
+- Trocar `rounded-xl` por `rounded-3xl` (24px)
+- Aumentar padding: `p-5 sm:p-8`
 
-### 4. `src/pages/Cupons.tsx`
-- Mesmo tratamento no gráfico CTR (BarChart vertical)
-- Reduzir `YAxis width` de `70` para `55` para nomes mais curtos
+### 4. KpiCard — `src/components/KpiCard.tsx`
+- Trocar `rounded-xl` por `rounded-3xl`
+- Aumentar padding: `p-5 sm:p-8`
 
-### 5. `src/pages/Equipe.tsx`
-- PieChart: reduzir `outerRadius` para `60` e `innerRadius` para `30` no mobile
-- Adicionar `overflow-hidden` ao container do pie
+### 5. Dashboard Bento Layout — `src/pages/Dashboard.tsx`
+Layout em grid assimétrico inspirado em bento grids:
 
-### 6. `src/pages/Relatorios.tsx`
-- RadarChart: adicionar `overflow-hidden` ao container
-- Reduzir `outerRadius` de `70%` para `65%`
+```text
+Desktop (lg):
+┌──────────┬──────────┬──────────┬──────────┐
+│   KPI 1  │   KPI 2  │   KPI 3  │   KPI 4  │
+├──────────┴──────────┼──────────┴──────────┤
+│                     │                      │
+│   Bar Chart         │   Line Chart         │
+│   (span 2 cols)     │   (span 2 cols)      │
+│                     │                      │
+└─────────────────────┴──────────────────────┘
+```
+
+- Aumentar gaps: `gap-4 sm:gap-6` → `gap-5 sm:gap-8`
+- KPIs grid: `gap-4 sm:gap-6`
+- Charts grid: `gap-5 sm:gap-8`
+- Altura dos charts um pouco maior: `h-[240px] sm:h-[320px]`
+
+### 6. Espaçamento global no layout — `src/components/layout/AppLayout.tsx`
+- Aumentar padding do `<main>`: `p-4 sm:p-8`
 
 ### Resumo técnico
 - 6 arquivos editados
-- Zero dependências novas
-- Foco em `overflow-hidden`, remoção de `aspect-video`, e padding responsivo
+- 1 dependência externa (Google Fonts URL change, zero npm installs)
+- Foco: fonte, border-radius, gaps, bento grid proportions
 
