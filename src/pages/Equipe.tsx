@@ -8,6 +8,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Search, Upload, FileUp, Users } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
+const pieGradients = [
+  { id: "gradPie0", from: "#1a3a8f", to: "#3b82f6" },
+  { id: "gradPie1", from: "#daa520", to: "#f5d76e" },
+  { id: "gradPie2", from: "#0b2297", to: "#1a3a8f" },
+  { id: "gradPie3", from: "#c4952a", to: "#daa520" },
+  { id: "gradPie4", from: "#2563eb", to: "#60a5fa" },
+];
+
 export default function Equipe() {
   const [search, setSearch] = useState("");
   const [membros, setMembros] = useState(equipeData);
@@ -73,13 +81,20 @@ export default function Equipe() {
         </Dialog>
       </div>
 
-      {/* PieChart — Distribuição de Saúde Corporativa */}
       <GlassCard className="animate-fade-in-up">
         <h2 className="text-base sm:text-lg font-semibold text-foreground mb-1">Distribuição de Saúde Corporativa</h2>
         <p className="text-xs text-muted-foreground mb-4">Dados agregados e anônimos — em conformidade com a LGPD</p>
         <div className="h-[220px] sm:h-[260px] overflow-hidden">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
+              <defs>
+                {pieGradients.map((g) => (
+                  <linearGradient key={g.id} id={g.id} x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor={g.from} />
+                    <stop offset="100%" stopColor={g.to} />
+                  </linearGradient>
+                ))}
+              </defs>
               <Pie
                 data={distribuicaoSaude}
                 dataKey="valor"
@@ -90,19 +105,20 @@ export default function Equipe() {
                 innerRadius={30}
                 paddingAngle={4}
                 strokeWidth={0}
-                label={({ nome, valor }) => `${valor}%`}
+                label={({ valor }) => `${valor}%`}
               >
-                {distribuicaoSaude.map((entry, index) => (
-                  <Cell key={index} fill={entry.cor} />
+                {distribuicaoSaude.map((_, index) => (
+                  <Cell key={index} fill={`url(#${pieGradients[index % pieGradients.length].id})`} />
                 ))}
               </Pie>
               <Tooltip
                 formatter={(value: number) => `${value}%`}
                 contentStyle={{
-                  background: "hsl(var(--card))",
-                  border: "1px solid hsl(var(--border))",
-                  borderRadius: "8px",
+                  background: "rgba(11, 34, 151, 0.9)",
+                  border: "1px solid rgba(218, 165, 32, 0.2)",
+                  borderRadius: "12px",
                   backdropFilter: "blur(12px)",
+                  color: "#fff",
                 }}
               />
               <Legend />
@@ -111,7 +127,6 @@ export default function Equipe() {
         </div>
       </GlassCard>
 
-      {/* Tabela de colaboradores */}
       <GlassCard className="animate-fade-in-up">
         <div className="mb-4">
           <div className="relative">
@@ -134,7 +149,7 @@ export default function Equipe() {
             </TableHeader>
             <TableBody>
               {filtered.map((m) => (
-                <TableRow key={m.id} className="hover:bg-muted/30 transition-colors">
+                <TableRow key={m.id} className="hover:bg-white/5 transition-colors">
                   <TableCell className="font-medium">
                     <span>{m.nome}</span>
                     <span className="block sm:hidden text-xs text-muted-foreground">{m.email}</span>
@@ -149,7 +164,7 @@ export default function Equipe() {
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
           <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1"><Users className="w-4 h-4" /> {filtered.length} de {membros.length} colaboradores</p>
         </div>
       </GlassCard>
