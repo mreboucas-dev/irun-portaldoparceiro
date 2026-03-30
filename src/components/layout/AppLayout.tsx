@@ -15,6 +15,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <img src={logoIrun} alt="iRun Clube+" className="w-8 h-8 rounded-lg" />
               <span className="text-xl font-bold text-primary">iRun</span>
               <span className="text-sm text-muted-foreground">Portal do Parceiro</span>
+            </div>
           </header>
           <main className="flex-1 overflow-auto p-4 sm:p-8">
             <PageTransition>
