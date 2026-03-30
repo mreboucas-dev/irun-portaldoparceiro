@@ -20,15 +20,15 @@ export default function Solicitacoes() {
   const ticket = solicitacoesData.find((s) => s.id === selected);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Central de Solicitações</h1>
-          <p className="text-muted-foreground">Gerencie seus pedidos de alteração</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Central de Solicitações</h1>
+          <p className="text-sm text-muted-foreground">Gerencie seus pedidos de alteração</p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="gold-gradient text-primary-foreground font-semibold hover:opacity-90 transition-opacity">
+            <Button className="gold-gradient text-primary-foreground font-semibold hover:opacity-90 transition-opacity w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" /> Nova Solicitação
             </Button>
           </DialogTrigger>
@@ -51,7 +51,7 @@ export default function Solicitacoes() {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <div className="lg:col-span-1 space-y-3">
           {solicitacoesData.map((sol, i) => {
             const cfg = statusConfig[sol.status];
@@ -81,8 +81,8 @@ export default function Solicitacoes() {
         <div className="lg:col-span-2">
           {ticket ? (
             <GlassCard className="animate-fade-in-up">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-foreground">{ticket.titulo}</h3>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                <h3 className="text-base sm:text-lg font-semibold text-foreground">{ticket.titulo}</h3>
                 <Badge variant="outline" className={statusConfig[ticket.status].color}>{ticket.status}</Badge>
               </div>
               <div className="space-y-4">
@@ -100,8 +100,8 @@ export default function Solicitacoes() {
             </GlassCard>
           ) : (
             <GlassCard>
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">Selecione uma solicitação para ver os detalhes</p>
+              <div className="text-center py-8 sm:py-12">
+                <p className="text-muted-foreground text-sm">Selecione uma solicitação para ver os detalhes</p>
               </div>
             </GlassCard>
           )}

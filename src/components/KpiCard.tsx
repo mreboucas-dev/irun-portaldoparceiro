@@ -25,7 +25,7 @@ export function KpiCard({ label, value, trend, icon, delay = 0 }: KpiCardProps) 
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-muted-foreground mb-1">{label}</p>
-          <p className="text-3xl font-bold text-foreground animate-count-up">{value}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-foreground animate-count-up">{value}</p>
           <span className={`text-sm font-medium mt-1 inline-block ${isPositive ? "text-emerald-500" : "text-destructive"}`}>
             {trend}
           </span>
