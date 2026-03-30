@@ -93,10 +93,30 @@
 
 @layer utilities {
   .glass-card {
-    @apply bg-white/60 backdrop-blur-xl border border-white/20 shadow-lg;
+    background: rgba(11, 34, 151, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 0 0 1px rgba(218, 165, 32, 0.2), 0 8px 32px -8px rgba(0, 0, 0, 0.3);
+    border: none;
   }
   .glass-card-dark {
-    @apply bg-white/10 backdrop-blur-xl border border-white/10 shadow-lg;
+    background: rgba(11, 34, 151, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 0 0 1px rgba(218, 165, 32, 0.15), 0 8px 32px -8px rgba(0, 0, 0, 0.4);
+    border: none;
+  }
+  .glass-sidebar {
+    background: rgba(11, 34, 151, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 0 0 1px rgba(218, 165, 32, 0.2);
+  }
+  .glass-header {
+    background: rgba(11, 34, 151, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 0 0 1px rgba(218, 165, 32, 0.15);
   }
   .gold-text {
     @apply text-accent;
