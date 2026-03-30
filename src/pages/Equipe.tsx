@@ -28,15 +28,15 @@ export default function Equipe() {
   }, [membros.length]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Gestão de Equipe</h1>
-          <p className="text-muted-foreground">{membros.length} colaboradores cadastrados</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Gestão de Equipe</h1>
+          <p className="text-sm text-muted-foreground">{membros.length} colaboradores cadastrados</p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="gold-gradient text-primary-foreground font-semibold hover:opacity-90">
+            <Button className="gold-gradient text-primary-foreground font-semibold hover:opacity-90 w-full sm:w-auto">
               <Upload className="w-4 h-4 mr-2" /> Importar CSV
             </Button>
           </DialogTrigger>
@@ -45,12 +45,12 @@ export default function Equipe() {
               <DialogTitle>Importar Colaboradores</DialogTitle>
             </DialogHeader>
             <div
-              className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors ${dragging ? "border-accent bg-accent/5" : "border-border"}`}
+              className={`border-2 border-dashed rounded-xl p-8 sm:p-12 text-center transition-colors ${dragging ? "border-accent bg-accent/5" : "border-border"}`}
               onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
               onDragLeave={() => setDragging(false)}
               onDrop={handleDrop}
             >
-              <FileUp className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+              <FileUp className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-4 text-muted-foreground" />
               <p className="text-sm text-muted-foreground mb-2">Arraste um arquivo .csv aqui</p>
               <p className="text-xs text-muted-foreground">ou</p>
               <Button
@@ -73,11 +73,11 @@ export default function Equipe() {
         </Dialog>
       </div>
 
-      {/* PieChart — Distribuição de Saúde Corporativa (dados anônimos e agregados) */}
+      {/* PieChart — Distribuição de Saúde Corporativa */}
       <GlassCard className="animate-fade-in-up">
-        <h2 className="text-lg font-semibold text-foreground mb-1">Distribuição de Saúde Corporativa</h2>
+        <h2 className="text-base sm:text-lg font-semibold text-foreground mb-1">Distribuição de Saúde Corporativa</h2>
         <p className="text-xs text-muted-foreground mb-4">Dados agregados e anônimos — em conformidade com a LGPD</p>
-        <div className="h-[260px]">
+        <div className="h-[220px] sm:h-[260px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -86,11 +86,11 @@ export default function Equipe() {
                 nameKey="nome"
                 cx="50%"
                 cy="50%"
-                outerRadius={90}
-                innerRadius={50}
+                outerRadius={70}
+                innerRadius={40}
                 paddingAngle={4}
                 strokeWidth={0}
-                label={({ nome, valor }) => `${nome} ${valor}%`}
+                label={({ nome, valor }) => `${valor}%`}
               >
                 {distribuicaoSaude.map((entry, index) => (
                   <Cell key={index} fill={entry.cor} />
@@ -113,39 +113,44 @@ export default function Equipe() {
 
       {/* Tabela de colaboradores */}
       <GlassCard className="animate-fade-in-up">
-        <div className="flex flex-col sm:flex-row gap-3 mb-4">
-          <div className="relative flex-1">
+        <div className="mb-4">
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Buscar por nome ou email..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
           </div>
         </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nome</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead className="text-right">Distância (km)</TableHead>
-              <TableHead className="text-right">Calorias</TableHead>
-              <TableHead className="text-right">Tempo (min)</TableHead>
-              <TableHead className="text-right">Pontos</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filtered.map((m) => (
-              <TableRow key={m.id} className="hover:bg-muted/30 transition-colors">
-                <TableCell className="font-medium">{m.nome}</TableCell>
-                <TableCell className="text-muted-foreground">{m.email}</TableCell>
-                <TableCell className="text-right font-mono">{m.distanciaKm.toFixed(1)}</TableCell>
-                <TableCell className="text-right font-mono">{m.calorias.toLocaleString()}</TableCell>
-                <TableCell className="text-right font-mono">{m.tempoAtividadeMin}</TableCell>
-                <TableCell className="text-right font-mono font-semibold">{m.pontos}</TableCell>
+        <div className="overflow-x-auto -mx-6 px-6">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead className="hidden sm:table-cell">Email</TableHead>
+                <TableHead className="text-right">Dist. (km)</TableHead>
+                <TableHead className="text-right hidden md:table-cell">Calorias</TableHead>
+                <TableHead className="text-right hidden md:table-cell">Tempo (min)</TableHead>
+                <TableHead className="text-right">Pontos</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((m) => (
+                <TableRow key={m.id} className="hover:bg-muted/30 transition-colors">
+                  <TableCell className="font-medium">
+                    <span>{m.nome}</span>
+                    <span className="block sm:hidden text-xs text-muted-foreground">{m.email}</span>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground hidden sm:table-cell">{m.email}</TableCell>
+                  <TableCell className="text-right font-mono text-sm">{m.distanciaKm.toFixed(1)}</TableCell>
+                  <TableCell className="text-right font-mono text-sm hidden md:table-cell">{m.calorias.toLocaleString()}</TableCell>
+                  <TableCell className="text-right font-mono text-sm hidden md:table-cell">{m.tempoAtividadeMin}</TableCell>
+                  <TableCell className="text-right font-mono font-semibold text-sm">{m.pontos}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-          <p className="text-sm text-muted-foreground flex items-center gap-1"><Users className="w-4 h-4" /> {filtered.length} de {membros.length} colaboradores</p>
+          <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1"><Users className="w-4 h-4" /> {filtered.length} de {membros.length} colaboradores</p>
         </div>
       </GlassCard>
     </div>
