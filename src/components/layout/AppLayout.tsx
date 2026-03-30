@@ -1,5 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
+import { PageTransition } from "@/components/PageTransition";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -15,7 +16,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </div>
           </header>
           <main className="flex-1 overflow-auto p-3 sm:p-6">
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
           </main>
         </div>
       </div>
