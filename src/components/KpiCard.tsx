@@ -25,13 +25,13 @@ export function KpiCard({ label, value, trend, icon, delay = 0 }: KpiCardProps) 
       initial={{ opacity: 0, y: 20, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.5, delay: delay / 1000, ease: [0.25, 0.46, 0.45, 0.94] }}
-      whileHover={{ y: -3, boxShadow: "0 14px 36px -8px hsl(var(--primary) / 0.15)" }}
+      whileHover={{ y: -3, boxShadow: "0 4px 16px rgba(0,0,0,0.08)" }}
       className="glass-card rounded-3xl p-5 sm:p-8 transition-colors duration-200"
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-white/60 mb-1">{label}</p>
-          <p className="text-2xl sm:text-3xl font-bold text-white">{value}</p>
+          <p className="text-sm text-muted-foreground mb-1">{label}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-foreground">{value}</p>
           <motion.span
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}

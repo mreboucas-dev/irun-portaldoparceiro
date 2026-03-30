@@ -62,8 +62,8 @@ export default function Cupons() {
                   <stop offset="100%" stopColor="#daa520" />
                 </linearGradient>
               </defs>
-              <XAxis type="number" stroke="rgba(255,255,255,0.4)" fontSize={11} axisLine={false} tickLine={false} />
-              <YAxis dataKey="nome" type="category" width={55} stroke="rgba(255,255,255,0.4)" fontSize={9} axisLine={false} tickLine={false} />
+              <XAxis type="number" stroke="#94a3b8" fontSize={11} axisLine={false} tickLine={false} />
+              <YAxis dataKey="nome" type="category" width={55} stroke="#94a3b8" fontSize={9} axisLine={false} tickLine={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="ctr" fill="url(#gradCtr)" radius={[0, 4, 4, 0]} />
             </BarChart>

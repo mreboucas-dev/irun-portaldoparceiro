@@ -43,7 +43,7 @@ export default function Desafios() {
               initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.35, delay: i * 0.05 }}
-              whileHover={{ x: 4, backgroundColor: "hsl(var(--muted) / 0.3)" }}
+              whileHover={{ x: 4, backgroundColor: "hsl(var(--muted) / 0.5)" }}
               className="flex items-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-lg transition-colors"
             >
               <span className="text-xl sm:text-2xl w-7 sm:w-8 text-center flex-shrink-0">{r.medalha || `#${r.pos}`}</span>

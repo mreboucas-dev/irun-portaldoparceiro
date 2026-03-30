@@ -114,11 +114,11 @@ export default function Equipe() {
               <Tooltip
                 formatter={(value: number) => `${value}%`}
                 contentStyle={{
-                  background: "rgba(11, 34, 151, 0.9)",
-                  border: "1px solid rgba(218, 165, 32, 0.2)",
+                  background: "#ffffff",
+                  border: "1px solid #e2e8f0",
                   borderRadius: "12px",
-                  backdropFilter: "blur(12px)",
-                  color: "#fff",
+                  color: "#0f172a",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                 }}
               />
               <Legend />
@@ -149,7 +149,7 @@ export default function Equipe() {
             </TableHeader>
             <TableBody>
               {filtered.map((m) => (
-                <TableRow key={m.id} className="hover:bg-white/5 transition-colors">
+                <TableRow key={m.id} className="hover:bg-muted/50 transition-colors">
                   <TableCell className="font-medium">
                     <span>{m.nome}</span>
                     <span className="block sm:hidden text-xs text-muted-foreground">{m.email}</span>
@@ -164,7 +164,7 @@ export default function Equipe() {
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
           <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1"><Users className="w-4 h-4" /> {filtered.length} de {membros.length} colaboradores</p>
         </div>
       </GlassCard>
