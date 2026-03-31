@@ -3,7 +3,7 @@ import { GlassCard } from "@/components/GlassCard";
 import { ChartContainer } from "@/components/ui/chart";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
 import { Button } from "@/components/ui/button";
-import { Download, Award, ArrowRight } from "lucide-react";
+import { Download, Award, TrendingDown, Leaf, Car, Activity } from "lucide-react";
 import { useState } from "react";
 
 const radarConfig = {
