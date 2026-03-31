@@ -14,12 +14,15 @@ export default function Relatorios() {
   const [carouselIdx, setCarouselIdx] = useState(0);
 
   const metrics = [
-    { label: "Emissão CO₂ (ton/mês)", antes: esgAnteDepois.antes.co2, depois: esgAnteDepois.depois.co2, unit: "ton" },
-    { label: "Deslocamento Motorizado (%)", antes: esgAnteDepois.antes.deslocamento, depois: esgAnteDepois.depois.deslocamento, unit: "%" },
-    { label: "Sedentarismo (%)", antes: esgAnteDepois.antes.sedentarismo, depois: esgAnteDepois.depois.sedentarismo, unit: "%" },
+    { label: "Emissão CO₂ (ton/mês)", antes: esgAnteDepois.antes.co2, depois: esgAnteDepois.depois.co2, unit: "ton", icon: Leaf },
+    { label: "Deslocamento Motorizado (%)", antes: esgAnteDepois.antes.deslocamento, depois: esgAnteDepois.depois.deslocamento, unit: "%", icon: Car },
+    { label: "Sedentarismo (%)", antes: esgAnteDepois.antes.sedentarismo, depois: esgAnteDepois.depois.sedentarismo, unit: "%", icon: Activity },
   ];
 
   const current = metrics[carouselIdx];
+  const reduction = Math.round(((current.antes - current.depois) / current.antes) * 100);
+  const maxVal = current.antes;
+  const IconComponent = current.icon;
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -45,21 +48,54 @@ export default function Relatorios() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <GlassCard className="animate-fade-in-up stagger-2">
-          <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-foreground">Antes e Depois — {current.label}</h3>
-          <div className="flex items-center justify-center gap-4 sm:gap-8 py-6 sm:py-8">
-            <div className="text-center">
-              <p className="text-xs sm:text-sm text-muted-foreground mb-2">Antes</p>
-              <p className="text-2xl sm:text-4xl font-bold text-destructive">{current.antes}{current.unit === "%" ? "%" : ""}</p>
-              {current.unit === "ton" && <p className="text-xs text-muted-foreground">ton/mês</p>}
+          <div className="flex items-center gap-2 mb-4 sm:mb-5">
+            <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+              <IconComponent className="w-4 h-4 text-accent" />
             </div>
-            <ArrowRight className="w-6 h-6 sm:w-8 sm:h-8 text-accent flex-shrink-0" />
-            <div className="text-center">
-              <p className="text-xs sm:text-sm text-muted-foreground mb-2">Depois</p>
-              <p className="text-2xl sm:text-4xl font-bold" style={{ color: "hsl(150 60% 45%)" }}>{current.depois}{current.unit === "%" ? "%" : ""}</p>
-              {current.unit === "ton" && <p className="text-xs text-muted-foreground">ton/mês</p>}
+            <h3 className="text-base sm:text-lg font-semibold text-foreground">Antes e Depois — {current.label}</h3>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            {/* Card Antes */}
+            <div className="bg-destructive/5 border border-destructive/15 rounded-2xl p-4 sm:p-5">
+              <span className="text-xs font-semibold uppercase tracking-wider text-destructive/70">Antes</span>
+              <p className="text-2xl sm:text-3xl font-bold text-destructive mt-2">
+                {current.antes}{current.unit === "%" ? "%" : ""}
+              </p>
+              {current.unit === "ton" && <p className="text-xs text-muted-foreground mt-1">ton/mês</p>}
+              <div className="mt-3 h-2 rounded-full bg-destructive/10 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-destructive/60 transition-all duration-700"
+                  style={{ width: `${(current.antes / maxVal) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Card Depois */}
+            <div className="bg-emerald-50 border border-emerald-200/50 rounded-2xl p-4 sm:p-5 dark:bg-emerald-950/20 dark:border-emerald-800/30">
+              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Depois</span>
+              <p className="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400 mt-2">
+                {current.depois}{current.unit === "%" ? "%" : ""}
+              </p>
+              {current.unit === "ton" && <p className="text-xs text-muted-foreground mt-1">ton/mês</p>}
+              <div className="mt-3 h-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-emerald-500/70 transition-all duration-700"
+                  style={{ width: `${(current.depois / maxVal) * 100}%` }}
+                />
+              </div>
             </div>
           </div>
-          <div className="flex justify-center gap-2 mt-2">
+
+          {/* Badge de redução */}
+          <div className="flex justify-center mt-4">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20">
+              <TrendingDown className="w-3.5 h-3.5 text-accent" />
+              <span className="text-xs font-semibold text-accent">Redução de {reduction}%</span>
+            </div>
+          </div>
+
+          <div className="flex justify-center gap-2 mt-4">
             {metrics.map((_, i) => (
               <button
                 key={i}
