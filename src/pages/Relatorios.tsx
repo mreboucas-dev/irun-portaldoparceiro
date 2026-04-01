@@ -14,9 +14,9 @@ export default function Relatorios() {
   const [carouselIdx, setCarouselIdx] = useState(0);
 
   const metrics = [
-    { label: "Emissão CO₂ (ton/mês)", antes: esgAnteDepois.antes.co2, depois: esgAnteDepois.depois.co2, unit: "ton", icon: Leaf },
-    { label: "Deslocamento Motorizado (%)", antes: esgAnteDepois.antes.deslocamento, depois: esgAnteDepois.depois.deslocamento, unit: "%", icon: Car },
-    { label: "Sedentarismo (%)", antes: esgAnteDepois.antes.sedentarismo, depois: esgAnteDepois.depois.sedentarismo, unit: "%", icon: Activity },
+    { label: "Emissão CO₂ (ton/mês)", shortLabel: "CO₂", antes: esgAnteDepois.antes.co2, depois: esgAnteDepois.depois.co2, unit: "ton", icon: Leaf },
+    { label: "Deslocamento Motorizado (%)", shortLabel: "Deslocamento", antes: esgAnteDepois.antes.deslocamento, depois: esgAnteDepois.depois.deslocamento, unit: "%", icon: Car },
+    { label: "Sedentarismo (%)", shortLabel: "Sedentarismo", antes: esgAnteDepois.antes.sedentarismo, depois: esgAnteDepois.depois.sedentarismo, unit: "%", icon: Activity },
   ];
 
   const current = metrics[carouselIdx];
