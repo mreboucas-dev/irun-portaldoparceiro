@@ -14,9 +14,9 @@ export default function Relatorios() {
   const [carouselIdx, setCarouselIdx] = useState(0);
 
   const metrics = [
-    { label: "Emissão CO₂ (ton/mês)", antes: esgAnteDepois.antes.co2, depois: esgAnteDepois.depois.co2, unit: "ton", icon: Leaf },
-    { label: "Deslocamento Motorizado (%)", antes: esgAnteDepois.antes.deslocamento, depois: esgAnteDepois.depois.deslocamento, unit: "%", icon: Car },
-    { label: "Sedentarismo (%)", antes: esgAnteDepois.antes.sedentarismo, depois: esgAnteDepois.depois.sedentarismo, unit: "%", icon: Activity },
+    { label: "Emissão CO₂ (ton/mês)", shortLabel: "CO₂", antes: esgAnteDepois.antes.co2, depois: esgAnteDepois.depois.co2, unit: "ton", icon: Leaf },
+    { label: "Deslocamento Motorizado (%)", shortLabel: "Deslocamento", antes: esgAnteDepois.antes.deslocamento, depois: esgAnteDepois.depois.deslocamento, unit: "%", icon: Car },
+    { label: "Sedentarismo (%)", shortLabel: "Sedentarismo", antes: esgAnteDepois.antes.sedentarismo, depois: esgAnteDepois.depois.sedentarismo, unit: "%", icon: Activity },
   ];
 
   const current = metrics[carouselIdx];
@@ -52,8 +52,30 @@ export default function Relatorios() {
             <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
               <IconComponent className="w-4 h-4 text-accent" />
             </div>
-            <h3 className="text-base sm:text-lg font-semibold text-foreground">Antes e Depois — {current.label}</h3>
+            <h3 className="text-base sm:text-lg font-semibold text-foreground">Antes e Depois</h3>
           </div>
+
+          <div className="flex flex-wrap gap-2 mb-4">
+            {metrics.map((m, i) => {
+              const TabIcon = m.icon;
+              return (
+                <button
+                  key={i}
+                  onClick={() => setCarouselIdx(i)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
+                    i === carouselIdx
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  <TabIcon className="w-3.5 h-3.5" />
+                  {m.shortLabel}
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="text-xs text-muted-foreground mb-3">{current.label}</p>
 
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {/* Card Antes */}
@@ -95,15 +117,6 @@ export default function Relatorios() {
             </div>
           </div>
 
-          <div className="flex justify-center gap-2 mt-4">
-            {metrics.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCarouselIdx(i)}
-                className={`w-3 h-3 rounded-full transition-colors ${i === carouselIdx ? "gold-gradient" : "bg-muted"}`}
-              />
-            ))}
-          </div>
         </GlassCard>
 
         <GlassCard className="animate-fade-in-up stagger-3">
