@@ -1,42 +1,38 @@
 
 
-# Redesign do Card "Antes e Depois" — Relatórios
+# Substituir Dots por Tabs Nomeadas no "Antes e Depois"
 
-## Resumo
-Transformar o card atual (que mostra apenas dois números com uma seta) em um card visualmente rico e premium, com barras de progresso comparativas, badges coloridos, cálculo de redução percentual e layout mais sofisticado.
+## Problema
+As 3 bolinhas (dots) não comunicam o que cada slide contém, dificultando a navegação.
 
-## Design Proposto
+## Solução
+Substituir os dots por **3 botões/tabs** com ícone + nome curto da métrica, posicionados acima do conteúdo do card (abaixo do título). O botão ativo terá destaque visual (fundo accent, texto bold).
 
 ```text
-┌──────────────────────────────────────────────┐
-│  Antes e Depois — Emissão CO₂ (ton/mês)     │
-│                                              │
-│  ┌─────────────────────┐  ┌────────────────┐ │
-│  │  ANTES              │  │  DEPOIS        │ │
-│  │  bg vermelho sutil  │  │  bg verde sutil│ │
-│  │                     │  │                │ │
-│  │   12.5 ton/mês      │  │  9.3 ton/mês   │ │
-│  │  ████████████████   │  │  ██████████     │ │
-│  │  (barra vermelha)   │  │  (barra verde) │ │
-│  └─────────────────────┘  └────────────────┘ │
-│                                              │
-│        ▼ Redução de 25.6%  ↓ badge dourado   │
-│                                              │
-│  ● ● ●  (dots do carousel)                  │
-└──────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│  Antes e Depois                                  │
+│                                                  │
+│  [🌿 CO₂]  [🚗 Deslocamento]  [🏃 Sedentarismo]  │
+│   ativo ▲                                        │
+│                                                  │
+│  ┌── ANTES ──┐  ┌── DEPOIS ──┐                   │
+│  │  12.5 ton │  │  9.3 ton   │                   │
+│  │  ████████ │  │  ██████    │                   │
+│  └───────────┘  └────────────┘                   │
+│         ▼ Redução de 25%                         │
+└──────────────────────────────────────────────────┘
 ```
 
-## Alterações — `src/pages/Relatorios.tsx` (único arquivo)
+## Alterações — `src/pages/Relatorios.tsx`
 
-1. **Dois sub-cards lado a lado** com fundos sutis: vermelho/rosa para "Antes" (`bg-destructive/5 border border-destructive/15 rounded-2xl p-4`) e verde para "Depois" (`bg-emerald-50 border border-emerald-200/50 rounded-2xl p-4`)
+1. **Remover os dots** (o bloco `flex justify-center gap-2 mt-4` com os 3 `<button>` circulares)
 
-2. **Barras de progresso visuais** abaixo de cada valor — barra proporcional ao valor máximo (o "antes"), com cores correspondentes (vermelho e verde)
+2. **Adicionar tabs** logo após o título do card — uma row de 3 botões com:
+   - Ícone da métrica (Leaf/Car/Activity, `w-3.5 h-3.5`)
+   - Label curto: "CO₂", "Deslocamento", "Sedentarismo"
+   - Estilo ativo: `bg-primary text-primary-foreground shadow-sm`
+   - Estilo inativo: `bg-muted/50 text-muted-foreground hover:bg-muted`
+   - Classes comuns: `px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all`
 
-3. **Badge de redução percentual** centralizado entre os dois blocos, calculado dinamicamente: `Math.round(((antes - depois) / antes) * 100)` — com ícone `TrendingDown` e fundo dourado sutil
-
-4. **Ícones contextuais** por métrica (CO₂ → Leaf, Deslocamento → Car, Sedentarismo → Activity) adicionados ao título de cada slide do carousel
-
-5. **Labels "Antes" e "Depois"** como badges pequenos (`text-xs font-semibold uppercase tracking-wider`) em vez de texto simples
-
-6. Importar `TrendingDown`, `Leaf`, `Car`, `Activity` do lucide-react
+3. Cada botão chama `setCarouselIdx(i)` como antes
 
