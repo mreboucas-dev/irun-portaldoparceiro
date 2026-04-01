@@ -117,15 +117,6 @@ export default function Relatorios() {
             </div>
           </div>
 
-          <div className="flex justify-center gap-2 mt-4">
-            {metrics.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCarouselIdx(i)}
-                className={`w-3 h-3 rounded-full transition-colors ${i === carouselIdx ? "gold-gradient" : "bg-muted"}`}
-              />
-            ))}
-          </div>
         </GlassCard>
 
         <GlassCard className="animate-fade-in-up stagger-3">
