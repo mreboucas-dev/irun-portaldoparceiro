@@ -52,7 +52,7 @@ export default function Relatorios() {
             <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
               <IconComponent className="w-4 h-4 text-accent" />
             </div>
-            <h3 className="text-base sm:text-lg font-semibold text-foreground">Antes e Depois — {current.label}</h3>
+            <h3 className="text-base sm:text-lg font-semibold text-foreground">Antes e Depois</h3>
           </div>
 
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
