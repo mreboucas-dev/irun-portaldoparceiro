@@ -55,6 +55,28 @@ export default function Relatorios() {
             <h3 className="text-base sm:text-lg font-semibold text-foreground">Antes e Depois</h3>
           </div>
 
+          <div className="flex flex-wrap gap-2 mb-4">
+            {metrics.map((m, i) => {
+              const TabIcon = m.icon;
+              return (
+                <button
+                  key={i}
+                  onClick={() => setCarouselIdx(i)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
+                    i === carouselIdx
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  <TabIcon className="w-3.5 h-3.5" />
+                  {m.shortLabel}
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="text-xs text-muted-foreground mb-3">{current.label}</p>
+
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {/* Card Antes */}
             <div className="bg-destructive/5 border border-destructive/15 rounded-2xl p-4 sm:p-5">
