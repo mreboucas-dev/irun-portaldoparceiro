@@ -50,7 +50,7 @@ export default function Relatorios() {
         <GlassCard className="animate-fade-in-up stagger-2">
           <h3 className="text-base sm:text-lg font-semibold text-foreground text-center mb-4">Antes e Depois</h3>
 
-          <div className="flex items-center justify-center gap-1 p-1 rounded-xl bg-muted/60 border border-border/50 mb-4 w-fit mx-auto">
+          <div className="flex items-center justify-center gap-1 p-1 rounded-xl bg-muted/60 border border-border/50 mb-4 w-fit mx-auto max-w-full overflow-x-auto">
             {metrics.map((m, i) => {
               const TabIcon = m.icon;
               return (
