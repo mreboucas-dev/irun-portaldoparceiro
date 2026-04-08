@@ -49,21 +49,57 @@ for (const dia of dias) {
   }
 }
 
-// Solicitações / Tickets
-export const solicitacoesData = [
-  { id: "SOL-001", titulo: "Alterar validade do cupom 'Smoothie Grátis'", status: "Pendente", data: "2026-03-25", prioridade: "Alta", updates: [
-    { data: "2026-03-25", msg: "Solicitação criada pelo parceiro." },
-  ]},
-  { id: "SOL-002", titulo: "Aumentar desconto do cupom 'Corrida'", status: "Em Análise", data: "2026-03-22", prioridade: "Média", updates: [
-    { data: "2026-03-22", msg: "Solicitação criada pelo parceiro." },
-    { data: "2026-03-23", msg: "Em análise pela equipe comercial." },
-  ]},
-  { id: "SOL-003", titulo: "Criar novo cupom de hidratação", status: "Resolvido", data: "2026-03-18", prioridade: "Baixa", updates: [
-    { data: "2026-03-18", msg: "Solicitação criada pelo parceiro." },
-    { data: "2026-03-19", msg: "Aprovado pela equipe." },
-    { data: "2026-03-20", msg: "Cupom criado e ativado com sucesso." },
-  ]},
+// Contratos de cupons
+export const contratosData = [
+  {
+    id: "CTR-001",
+    status: "Vigente" as const,
+    inicio: "2026-03-01",
+    fim: "2026-06-30",
+    cupons: [
+      { nome: "10% Off Corrida", categoria: "Transporte", resgates: 245 },
+      { nome: "Smoothie Grátis", categoria: "Alimentação", resgates: 189 },
+      { nome: "Massagem 20min", categoria: "Saúde", resgates: 98 },
+    ],
+    updates: [
+      { data: "2026-03-01", msg: "Contrato ativado com sucesso." },
+      { data: "2026-03-15", msg: "Primeiro relatório parcial gerado." },
+    ],
+  },
+  {
+    id: "CTR-000",
+    status: "Encerrado" as const,
+    inicio: "2025-11-01",
+    fim: "2026-02-28",
+    cupons: [
+      { nome: "Café Premium", categoria: "Alimentação", resgates: 156 },
+      { nome: "Desconto Tênis", categoria: "Esporte", resgates: 312 },
+      { nome: "Aula de Yoga", categoria: "Saúde", resgates: 67 },
+      { nome: "Desconto Farmácia", categoria: "Saúde", resgates: 203 },
+    ],
+    updates: [
+      { data: "2025-11-01", msg: "Contrato ativado." },
+      { data: "2026-02-28", msg: "Contrato encerrado conforme previsto." },
+    ],
+  },
 ];
+
+export const solicitacaoNovoContrato = {
+  id: "CTR-002",
+  status: "Em Análise" as const,
+  inicio: "2026-07-01",
+  fim: "2026-09-30",
+  cuponsPropostos: [
+    { nome: "15% Off Corrida", categoria: "Transporte" },
+    { nome: "Smoothie Grátis", categoria: "Alimentação" },
+    { nome: "Aula de Pilates", categoria: "Saúde" },
+    { nome: "Desconto Suplemento", categoria: "Nutrição" },
+  ],
+  updates: [
+    { data: "2026-03-25", msg: "Solicitação de novo contrato enviada pelo parceiro." },
+    { data: "2026-03-27", msg: "Em análise pela equipe comercial." },
+  ],
+};
 
 // Equipe (colaboradores) — sem campo "nível" individual (LGPD)
 export const equipeData = [

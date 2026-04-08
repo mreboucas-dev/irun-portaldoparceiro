@@ -2,7 +2,7 @@ import logoIrun from "@/assets/logo-irun.png";
 import {
   LayoutDashboard,
   Ticket,
-  MessageSquare,
+  FileText,
   Users,
   Trophy,
   FileBarChart,
@@ -24,7 +24,7 @@ import {
 const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Cupons", url: "/cupons", icon: Ticket },
-  { title: "Solicitações", url: "/solicitacoes", icon: MessageSquare },
+  { title: "Contratos", url: "/contratos", icon: FileText },
 ];
 
 const corpoItems = [

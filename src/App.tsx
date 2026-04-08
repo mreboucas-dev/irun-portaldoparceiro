@@ -7,7 +7,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Cupons from "./pages/Cupons";
-import Solicitacoes from "./pages/Solicitacoes";
+import Contratos from "./pages/Contratos";
 import Equipe from "./pages/Equipe";
 import Desafios from "./pages/Desafios";
 import Relatorios from "./pages/Relatorios";
@@ -27,7 +27,7 @@ const App = () => (
           </Route>
           <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
           <Route path="/cupons" element={<AppLayout><Cupons /></AppLayout>} />
-          <Route path="/solicitacoes" element={<AppLayout><Solicitacoes /></AppLayout>} />
+          <Route path="/contratos" element={<AppLayout><Contratos /></AppLayout>} />
           <Route path="/equipe" element={<AppLayout><Equipe /></AppLayout>} />
           <Route path="/desafios" element={<AppLayout><Desafios /></AppLayout>} />
           <Route path="/relatorios" element={<AppLayout><Relatorios /></AppLayout>} />
