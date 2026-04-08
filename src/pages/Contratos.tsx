@@ -216,7 +216,7 @@ export default function Contratos() {
             <div className="relative pl-6 space-y-3 border-l-2 border-border">
               {pendente.updates.map((u, i) => (
                 <div key={i} className="relative">
-                  <div className="absolute -left-[25px] w-3 h-3 rounded-full bg-blue-500 border-2 border-background" />
+                  <div className="absolute -left-[25px] w-3 h-3 rounded-full bg-primary border-2 border-background" />
                   <p className="text-xs text-muted-foreground">{formatDate(u.data)}</p>
                   <p className="text-sm text-foreground">{u.msg}</p>
                 </div>
