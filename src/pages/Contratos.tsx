@@ -55,6 +55,7 @@ function formatPeriodo(inicio: string, fim: string) {
 
 export default function Contratos() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [expandedHistorico, setExpandedHistorico] = useState<string | null>(null);
   const contratoVigente = contratosData.find((c) => c.status === "Vigente");
   const contratosEncerrados = contratosData.filter((c) => c.status === "Encerrado");
   const pendente = solicitacaoNovoContrato;
