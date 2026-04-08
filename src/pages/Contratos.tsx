@@ -235,27 +235,75 @@ export default function Contratos() {
           </div>
 
           <div className="space-y-3">
-            {contratosEncerrados.map((contrato) => (
-              <div
-                key={contrato.id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-xl border border-border bg-muted/20 p-3"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-mono text-muted-foreground">{contrato.id}</span>
-                  <span className="text-sm text-foreground">
-                    {formatPeriodo(contrato.inicio, contrato.fim)}
-                  </span>
+            {contratosEncerrados.map((contrato) => {
+              const isExpanded = expandedHistorico === contrato.id;
+              return (
+                <div
+                  key={contrato.id}
+                  className="rounded-xl border border-border bg-muted/20 overflow-hidden transition-colors"
+                >
+                  <button
+                    onClick={() => setExpandedHistorico(isExpanded ? null : contrato.id)}
+                    className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 text-left hover:bg-muted/40 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-mono text-muted-foreground">{contrato.id}</span>
+                      <span className="text-sm text-foreground">
+                        {formatPeriodo(contrato.inicio, contrato.fim)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-muted-foreground">
+                        {contrato.cupons.length} cupons
+                      </span>
+                      <Badge variant="outline" className={statusConfig.Encerrado.color}>
+                        Encerrado
+                      </Badge>
+                      <ChevronDown className={cn("w-4 h-4 text-muted-foreground transition-transform duration-200", isExpanded && "rotate-180")} />
+                    </div>
+                  </button>
+
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="px-3 pb-4 border-t border-border"
+                    >
+                      <div className="pt-3">
+                        <h4 className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5">
+                          <Package className="w-3.5 h-3.5" /> Cupons incluídos
+                        </h4>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                          {contrato.cupons.map((cupom, i) => (
+                            <div key={i} className="rounded-lg border border-border bg-background/50 p-2 text-center">
+                              <p className="text-xs font-medium text-foreground">{cupom.nome}</p>
+                              <p className="text-[10px] text-muted-foreground">{cupom.categoria}</p>
+                              <p className="text-sm font-bold text-primary mt-0.5">{cupom.resgates}</p>
+                              <p className="text-[10px] text-muted-foreground">resgates</p>
+                            </div>
+                          ))}
+                        </div>
+
+                        <h4 className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5">
+                          <CalendarDays className="w-3.5 h-3.5" /> Timeline
+                        </h4>
+                        <div className="relative pl-5 space-y-2 border-l-2 border-border">
+                          {contrato.updates.map((u, i) => (
+                            <div key={i} className="relative">
+                              <div className="absolute -left-[21px] w-2.5 h-2.5 rounded-full bg-muted-foreground/50 border-2 border-background" />
+                              <p className="text-[10px] text-muted-foreground">{formatDate(u.data)}</p>
+                              <p className="text-xs text-foreground">{u.msg}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-muted-foreground">
-                    {contrato.cupons.length} cupons
-                  </span>
-                  <Badge variant="outline" className={statusConfig.Encerrado.color}>
-                    Encerrado
-                  </Badge>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </GlassCard>
       )}
