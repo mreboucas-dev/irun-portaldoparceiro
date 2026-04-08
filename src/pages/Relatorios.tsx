@@ -48,27 +48,26 @@ export default function Relatorios() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <GlassCard className="animate-fade-in-up stagger-2">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
-            <h3 className="text-base sm:text-lg font-semibold text-foreground">Antes e Depois</h3>
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-muted/60 border border-border/50">
-              {metrics.map((m, i) => {
-                const TabIcon = m.icon;
-                return (
-                  <button
-                    key={i}
-                    onClick={() => setCarouselIdx(i)}
-                    className={`px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 ${
-                      i === carouselIdx
-                        ? "bg-primary text-primary-foreground shadow-md"
-                        : "text-muted-foreground hover:text-foreground hover:bg-background/60"
-                    }`}
-                  >
-                    <TabIcon className="w-3.5 h-3.5" />
-                    {m.shortLabel}
-                  </button>
-                );
-              })}
-            </div>
+          <h3 className="text-base sm:text-lg font-semibold text-foreground text-center mb-4">Antes e Depois</h3>
+
+          <div className="flex items-center justify-center gap-1 p-1 rounded-xl bg-muted/60 border border-border/50 mb-4 w-fit mx-auto">
+            {metrics.map((m, i) => {
+              const TabIcon = m.icon;
+              return (
+                <button
+                  key={i}
+                  onClick={() => setCarouselIdx(i)}
+                  className={`px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 ${
+                    i === carouselIdx
+                      ? "bg-primary text-primary-foreground shadow-md"
+                      : "text-muted-foreground hover:text-foreground hover:bg-background/60"
+                  }`}
+                >
+                  <TabIcon className="w-3.5 h-3.5" />
+                  {m.shortLabel}
+                </button>
+              );
+            })}
           </div>
 
           <p className="text-xs text-muted-foreground mb-3">{current.label}</p>
