@@ -1,76 +1,83 @@
 
 
-# Redesign da Aba Solicitações — Modelo de Contratos
+# Nova Aba "Validação de Cupom"
 
-## Contexto
+## Objetivo
 
-A aba atual funciona como um sistema de tickets abertos, onde o parceiro pode solicitar alterações pontuais em cupons a qualquer momento. A nova proposta substitui isso por um modelo de **contratos com período determinado**, onde o parceiro define antecipadamente quais cupons serão oferecidos e por quanto tempo, solicitando renovação com antecedência.
+Adicionar uma nova aba no topo da sidebar (acima de "Dashboard") onde o parceiro pode digitar manualmente o código do cupom para validá-lo, caso o usuário não consiga usar a câmera/QR Code.
 
-## Novo Conceito
-
-A página "Solicitações" passa a se chamar **"Contratos"** (ou "Gestão de Contratos") e terá duas áreas principais:
+## Fluxo da Tela
 
 ```text
 ┌──────────────────────────────────────────────────────┐
-│  Gestão de Contratos                                 │
-│  Acompanhe seus contratos de cupons vigentes         │
+│  Validação de Cupom                                  │
+│  Digite o código do cupom para validar manualmente   │
 │                                                      │
 │  ┌────────────────────────────────────────────────┐  │
-│  │  CONTRATO VIGENTE                   #CTR-001   │  │
-│  │  Período: 01/03/2026 — 30/06/2026             │  │
-│  │  ████████████████████░░░░░  68% concluído     │  │
+│  │   [ ícone QR ]                                 │  │
 │  │                                                │  │
-│  │  Cupons incluídos:                            │  │
-│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐       │  │
-│  │  │10% Corrida│ │Smoothie │ │Massagem  │       │  │
-│  │  │Transporte │ │Alimentaç│ │Saúde     │       │  │
-│  │  │245 resg.  │ │189 resg.│ │98 resg.  │       │  │
-│  │  └──────────┘ └──────────┘ └──────────┘       │  │
+│  │   Código do cupom                              │  │
+│  │   ┌──────────────────────────────────┐         │  │
+│  │   │  IRUN-XXXX-XXXX                  │         │  │
+│  │   └──────────────────────────────────┘         │  │
 │  │                                                │  │
-│  │  Dias restantes: 83     Próx. renovação: 15/06│  │
+│  │           [   Validar Cupom   ]                │  │
+│  │                                                │  │
 │  └────────────────────────────────────────────────┘  │
 │                                                      │
-│  [📋 Solicitar Novo Contrato]                        │
+│  ──── Após validação ────                            │
 │                                                      │
-│  HISTÓRICO DE CONTRATOS                              │
-│  ┌─────────┬─────────────┬──────────┬───────────┐   │
-│  │ #CTR-000│ Nov-Fev 2026│ 4 cupons │ Encerrado │   │
-│  └─────────┴─────────────┴──────────┴───────────┘   │
-│                                                      │
-│  SOLICITAÇÃO PENDENTE (se houver)                    │
+│  ✅ VERDE (cupom válido)                             │
 │  ┌────────────────────────────────────────────────┐  │
-│  │  #CTR-002 (Novo Contrato)    Em Análise       │  │
-│  │  Período solicitado: 01/07 — 30/09/2026       │  │
-│  │  Timeline: Enviado em 25/03 → Em análise...   │  │
+│  │  ✓  Cupom validado                             │  │
+│  │     10% Off Corrida — Transporte               │  │
+│  │     Validade: 30/04/2026                       │  │
+│  │     [ Validar outro cupom ]                    │  │
+│  └────────────────────────────────────────────────┘  │
+│                                                      │
+│  ❌ VERMELHO (inválido / expirado)                    │
+│  ┌────────────────────────────────────────────────┐  │
+│  │  ✕  Cupom inválido                             │  │
+│  │     Este cupom está expirado ou fora do prazo. │  │
+│  │     [ Tentar novamente ]                       │  │
 │  └────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────┘
 ```
 
-## Alteracoes Tecnicas
+## Alterações Técnicas
 
-### 1. Mock Data (`src/data/mockData.ts`)
-- Remover `solicitacoesData` (tickets avulsos)
-- Adicionar `contratosData` com:
-  - Contrato vigente: id, periodo (inicio/fim), status ("Vigente"), lista de cupons vinculados (nome, categoria, resgates), timeline de updates
-  - Contrato encerrado: mesmo formato, status "Encerrado"
-  - Solicitacao de novo contrato: status "Em Analise" ou "Pendente", periodo solicitado, cupons propostos, timeline
+### 1. Mock de códigos válidos (`src/data/mockData.ts`)
+Adicionar lista `codigosValidacao` com códigos de exemplo vinculados aos cupons existentes:
+- `IRUN-CORR-2025` → "10% Off Corrida" (válido)
+- `IRUN-SMTH-1138` → "Smoothie Grátis" (válido)
+- `IRUN-MASS-9921` → "Massagem 20min" (válido)
+- `IRUN-CAFE-0001` → "Café Premium" (expirado → inválido)
+- `IRUN-YOGA-3344` → "Aula de Yoga" (status pausado → inválido)
 
-### 2. Pagina (`src/pages/Solicitacoes.tsx` — renomear para `Contratos.tsx`)
-- **Card do contrato vigente** no topo: periodo com barra de progresso temporal, lista de cupons incluidos como mini-cards, dias restantes e data sugerida para renovacao
-- **Botao "Solicitar Novo Contrato"**: abre Dialog com campos para periodo desejado (date pickers) e lista de cupons desejados (checkboxes ou inputs). Botao fica desabilitado se ja existir solicitacao pendente
-- **Card de solicitacao pendente** (condicional): mostra o novo contrato em analise com timeline igual a atual
-- **Historico de contratos**: lista simples com contratos anteriores encerrados
+A função de validação retornará `{ valido: boolean, cupom?: {...}, motivo?: string }` cruzando o código com `cuponsData` (status `Ativo` + validade futura = válido; caso contrário inválido).
+
+### 2. Nova página (`src/pages/ValidacaoCupom.tsx`)
+- Estado: `codigo` (string), `resultado` ('idle' | 'valido' | 'invalido'), info do cupom
+- Card central com `Input` (código) usando validação Zod (uppercase, max 32 chars, formato `IRUN-XXXX-XXXX`)
+- Botão "Validar Cupom" — submit por Enter também funciona
+- Após submit: card de resultado abaixo do form
+  - **Verde** (`bg-green-500/10 border-green-500`): ícone `CheckCircle2`, "Cupom validado" + nome/categoria/validade
+  - **Vermelho** (`bg-red-500/10 border-red-500`): ícone `XCircle`, "Cupom inválido" + motivo (expirado / não encontrado / pausado)
+- Botão para limpar e validar outro cupom
+- Animação `framer-motion` no aparecimento do resultado
+- Layout responsivo (max-width centralizado, full-width em mobile)
 
 ### 3. Sidebar (`src/components/layout/AppSidebar.tsx`)
-- Alterar label de "Solicitacoes" para "Contratos"
-- Trocar icone de `MessageSquare` para `FileText` ou `ScrollText`
+- Adicionar novo item **acima** de "Dashboard" no array `mainItems`:
+  - `{ title: "Validação de Cupom", url: "/validacao", icon: ScanLine }`
+- Ícone sugerido: `ScanLine` ou `QrCode` do lucide-react
 
 ### 4. Rota (`src/App.tsx`)
-- Atualizar path `/solicitacoes` para `/contratos` (ou manter path e so trocar componente)
+- Importar `ValidacaoCupom` e adicionar `<Route path="/validacao" element={<AppLayout><ValidacaoCupom /></AppLayout>} />`
 
-## Beneficios do Design
-- O parceiro ve claramente o contrato vigente e quanto tempo falta
-- So pode solicitar um novo contrato, nao alteracoes avulsas
-- A timeline mostra o andamento da analise sem gerar expectativa de mudancas imediatas
-- Historico da transparencia sobre contratos anteriores
+## Detalhes de UX
+- Input em **uppercase automático** para facilitar a digitação
+- Mensagem de erro inline se o formato do código for inválido antes de submeter
+- Estado `idle` por padrão; resultado só aparece após clicar em "Validar"
+- Toast de sucesso/erro complementar usando `sonner`
 
