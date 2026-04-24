@@ -6,6 +6,7 @@ import {
   Users,
   Trophy,
   FileBarChart,
+  ScanLine,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -22,6 +23,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const mainItems = [
+  { title: "Validação de Cupom", url: "/validacao", icon: ScanLine },
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Cupons", url: "/cupons", icon: Ticket },
   { title: "Contratos", url: "/contratos", icon: FileText },

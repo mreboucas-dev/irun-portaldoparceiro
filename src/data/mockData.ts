@@ -38,6 +38,35 @@ export const cuponsData = [
   { id: 6, nome: "Massagem 20min", categoria: "Saúde", status: "Ativo", ctr: 9.2, resgates: 98, validade: "2026-07-10" },
 ];
 
+// Códigos de validação manual de cupons
+export const codigosValidacao: Record<string, number> = {
+  "IRUN-CORR-2025": 1, // 10% Off Corrida (Ativo)
+  "IRUN-SMTH-1138": 2, // Smoothie Grátis (Ativo)
+  "IRUN-MASS-9921": 6, // Massagem 20min (Ativo)
+  "IRUN-CAFE-0001": 5, // Café Premium (Expirado)
+  "IRUN-YOGA-3344": 3, // Aula de Yoga (Pausado)
+  "IRUN-TENS-7788": 4, // Desconto Tênis (Ativo)
+};
+
+export type ResultadoValidacao =
+  | { valido: true; cupom: typeof cuponsData[number] }
+  | { valido: false; motivo: "expirado" | "pausado" | "nao_encontrado"; cupom?: typeof cuponsData[number] };
+
+export function validarCodigoCupom(codigo: string): ResultadoValidacao {
+  const code = codigo.trim().toUpperCase();
+  const cupomId = codigosValidacao[code];
+  if (!cupomId) return { valido: false, motivo: "nao_encontrado" };
+  const cupom = cuponsData.find((c) => c.id === cupomId);
+  if (!cupom) return { valido: false, motivo: "nao_encontrado" };
+  if (cupom.status === "Expirado" || new Date(cupom.validade) < new Date()) {
+    return { valido: false, motivo: "expirado", cupom };
+  }
+  if (cupom.status === "Pausado") {
+    return { valido: false, motivo: "pausado", cupom };
+  }
+  return { valido: true, cupom };
+}
+
 // Heatmap de horários de resgate (hora x dia)
 export const heatmapData: { dia: string; hora: number; valor: number }[] = [];
 const dias = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];

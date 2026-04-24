@@ -11,6 +11,7 @@ import Contratos from "./pages/Contratos";
 import Equipe from "./pages/Equipe";
 import Desafios from "./pages/Desafios";
 import Relatorios from "./pages/Relatorios";
+import ValidacaoCupom from "./pages/ValidacaoCupom";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route element={<AppLayout><Routes><Route path="*" element={null} /></Routes></AppLayout>}>
           </Route>
+          <Route path="/validacao" element={<AppLayout><ValidacaoCupom /></AppLayout>} />
           <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
           <Route path="/cupons" element={<AppLayout><Cupons /></AppLayout>} />
           <Route path="/contratos" element={<AppLayout><Contratos /></AppLayout>} />
