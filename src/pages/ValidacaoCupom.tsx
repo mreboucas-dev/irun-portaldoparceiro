@@ -44,7 +44,7 @@ export default function ValidacaoCupom() {
     }
     setErro(null);
     const r = validarCodigoCupom(parsed.data);
-    if (r.valido) {
+    if (r.valido === true) {
       setResultado({ tipo: "valido", data: r });
       toast.success("Cupom validado com sucesso");
     } else {
