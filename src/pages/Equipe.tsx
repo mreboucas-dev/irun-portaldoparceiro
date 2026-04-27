@@ -1,12 +1,14 @@
-import { useState, useCallback } from "react";
-import { equipeData, csvSimulatedNames, distribuicaoSaude } from "@/data/mockData";
+import { useState, useCallback, useMemo } from "react";
+import { equipeData, csvSimulatedNames, distribuicaoSaude, usuariosAppIrun } from "@/data/mockData";
 import { GlassCard } from "@/components/GlassCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Upload, FileUp, Users } from "lucide-react";
+import { Search, Upload, FileUp, Users, UserPlus, Check, Plus } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { toast } from "sonner";
 
 const pieGradients = [
   { id: "gradPie0", from: "#1a3a8f", to: "#3b82f6" },
