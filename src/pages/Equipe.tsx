@@ -26,6 +26,7 @@ export default function Equipe() {
   const [uploaded, setUploaded] = useState(false);
   const [buscaApp, setBuscaApp] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [membroParaRemover, setMembroParaRemover] = useState<number | null>(null);
 
   const filtered = membros.filter((m) => {
     return m.nome.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase());
