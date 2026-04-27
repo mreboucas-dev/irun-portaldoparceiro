@@ -202,6 +202,7 @@ export default function Equipe() {
             </div>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       <GlassCard className="animate-fade-in-up">
