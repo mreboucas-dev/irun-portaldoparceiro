@@ -73,6 +73,15 @@ export default function Equipe() {
     toast.success(`${usuario.nome} adicionado à equipe`);
   };
 
+  const handleRemoverMembro = (id: number) => {
+    const membro = membros.find((m) => m.id === id);
+    setMembros((prev) => prev.filter((m) => m.id !== id));
+    setMembroParaRemover(null);
+    if (membro) {
+      toast.success(`${membro.nome} removido da equipe`);
+    }
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
