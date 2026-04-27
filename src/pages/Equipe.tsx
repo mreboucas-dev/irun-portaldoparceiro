@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Upload, FileUp, Users, UserPlus, Check, Plus } from "lucide-react";
+import { Search, Upload, FileUp, Users, UserPlus, Check, Plus, Trash2 } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { toast } from "sonner";
 
@@ -25,6 +26,7 @@ export default function Equipe() {
   const [uploaded, setUploaded] = useState(false);
   const [buscaApp, setBuscaApp] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [membroParaRemover, setMembroParaRemover] = useState<number | null>(null);
 
   const filtered = membros.filter((m) => {
     return m.nome.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase());
@@ -69,6 +71,15 @@ export default function Equipe() {
       },
     ]);
     toast.success(`${usuario.nome} adicionado à equipe`);
+  };
+
+  const handleRemoverMembro = (id: number) => {
+    const membro = membros.find((m) => m.id === id);
+    setMembros((prev) => prev.filter((m) => m.id !== id));
+    setMembroParaRemover(null);
+    if (membro) {
+      toast.success(`${membro.nome} removido da equipe`);
+    }
   };
 
   return (
@@ -269,6 +280,7 @@ export default function Equipe() {
                 <TableHead className="text-right hidden md:table-cell">Calorias</TableHead>
                 <TableHead className="text-right hidden md:table-cell">Tempo (min)</TableHead>
                 <TableHead className="text-right">Pontos</TableHead>
+                <TableHead className="text-right w-16">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -283,6 +295,37 @@ export default function Equipe() {
                   <TableCell className="text-right font-mono text-sm hidden md:table-cell">{m.calorias.toLocaleString()}</TableCell>
                   <TableCell className="text-right font-mono text-sm hidden md:table-cell">{m.tempoAtividadeMin}</TableCell>
                   <TableCell className="text-right font-mono font-semibold text-sm">{m.pontos}</TableCell>
+                  <TableCell className="text-right">
+                    <AlertDialog open={membroParaRemover === m.id} onOpenChange={(open) => !open && setMembroParaRemover(null)}>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => setMembroParaRemover(m.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Remover colaborador?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tem certeza que deseja remover <strong>{m.nome}</strong> da equipe? Essa ação não pode ser desfeita.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel onClick={() => setMembroParaRemover(null)}>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            onClick={() => handleRemoverMembro(m.id)}
+                          >
+                            Remover
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
