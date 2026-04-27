@@ -19,8 +19,17 @@ const pieGradients = [
   { id: "gradPie4", from: "#2563eb", to: "#60a5fa" },
 ];
 
+type FiltroEngajamento = "todos" | "alto" | "medio" | "baixo";
+
+function getNivel(pontos: number): Exclude<FiltroEngajamento, "todos"> {
+  if (pontos > 700) return "alto";
+  if (pontos >= 300) return "medio";
+  return "baixo";
+}
+
 export default function Equipe() {
   const [search, setSearch] = useState("");
+  const [filtroEngajamento, setFiltroEngajamento] = useState<FiltroEngajamento>("todos");
   const [membros, setMembros] = useState(equipeData);
   const [dragging, setDragging] = useState(false);
   const [uploaded, setUploaded] = useState(false);
@@ -28,9 +37,21 @@ export default function Equipe() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [membroParaRemover, setMembroParaRemover] = useState<number | null>(null);
 
-  const filtered = membros.filter((m) => {
-    return m.nome.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase());
-  });
+  const contagemNiveis = useMemo(() => {
+    const c = { todos: membros.length, alto: 0, medio: 0, baixo: 0 };
+    membros.forEach((m) => {
+      c[getNivel(m.pontos)]++;
+    });
+    return c;
+  }, [membros]);
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return membros
+      .filter((m) => m.nome.toLowerCase().includes(q) || m.email.toLowerCase().includes(q))
+      .filter((m) => filtroEngajamento === "todos" || getNivel(m.pontos) === filtroEngajamento)
+      .sort((a, b) => b.pontos - a.pontos);
+  }, [membros, search, filtroEngajamento]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
