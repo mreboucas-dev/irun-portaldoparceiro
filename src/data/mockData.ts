@@ -144,6 +144,25 @@ export const equipeData = [
   { id: 10, nome: "João Pedro", email: "joao.p@empresa.com", distanciaKm: 3.0, calorias: 220, tempoAtividadeMin: 28, pontos: 290 },
 ];
 
+// Base simulada de usuários do app iRun (em produção, viria via API)
+export const usuariosAppIrun = [
+  { id: 101, nome: "Ana Beatriz Souza", email: "ana.beatriz@gmail.com", username: "anabia", distanciaKm: 7.2, calorias: 450, tempoAtividadeMin: 55, pontos: 680 },
+  { id: 102, nome: "Ana Paula Ferreira", email: "ana.p@outlook.com", username: "anapf", distanciaKm: 4.5, calorias: 290, tempoAtividadeMin: 35, pontos: 410 },
+  { id: 103, nome: "Bruno Almeida", email: "bruno.almeida@gmail.com", username: "brunoalm", distanciaKm: 10.1, calorias: 640, tempoAtividadeMin: 78, pontos: 820 },
+  { id: 104, nome: "Camila Ribeiro", email: "camila.r@hotmail.com", username: "camir", distanciaKm: 3.2, calorias: 220, tempoAtividadeMin: 28, pontos: 320 },
+  { id: 105, nome: "Daniel Cardoso", email: "daniel.c@gmail.com", username: "danicard", distanciaKm: 8.6, calorias: 540, tempoAtividadeMin: 65, pontos: 730 },
+  { id: 106, nome: "Eduarda Pinto", email: "duda.pinto@yahoo.com", username: "dudap", distanciaKm: 5.8, calorias: 380, tempoAtividadeMin: 47, pontos: 560 },
+  { id: 107, nome: "Fernanda Castro", email: "fer.castro@gmail.com", username: "fercastro", distanciaKm: 11.4, calorias: 720, tempoAtividadeMin: 88, pontos: 910 },
+  { id: 108, nome: "Gustavo Mello", email: "gustavo.m@outlook.com", username: "gusmello", distanciaKm: 2.4, calorias: 170, tempoAtividadeMin: 22, pontos: 240 },
+  { id: 109, nome: "Helena Tavares", email: "helena.t@gmail.com", username: "helet", distanciaKm: 6.7, calorias: 430, tempoAtividadeMin: 53, pontos: 620 },
+  { id: 110, nome: "Igor Nascimento", email: "igor.n@gmail.com", username: "igornas", distanciaKm: 9.3, calorias: 590, tempoAtividadeMin: 71, pontos: 790 },
+  { id: 111, nome: "Juliana Pires", email: "ju.pires@gmail.com", username: "jupires", distanciaKm: 4.1, calorias: 270, tempoAtividadeMin: 33, pontos: 380 },
+  { id: 112, nome: "Kaique Moreira", email: "kaique.m@hotmail.com", username: "kaiquem", distanciaKm: 7.9, calorias: 500, tempoAtividadeMin: 60, pontos: 690 },
+  { id: 113, nome: "Larissa Duarte", email: "lari.duarte@gmail.com", username: "laridu", distanciaKm: 5.3, calorias: 350, tempoAtividadeMin: 42, pontos: 510 },
+  { id: 114, nome: "Mateus Vieira", email: "mateus.v@outlook.com", username: "matvieira", distanciaKm: 12.8, calorias: 810, tempoAtividadeMin: 95, pontos: 980 },
+  { id: 115, nome: "Renata Brito", email: "renata.b@gmail.com", username: "rebrito", distanciaKm: 6.0, calorias: 400, tempoAtividadeMin: 50, pontos: 590 },
+];
+
 export const csvSimulatedNames = [
   { nome: "Lucas Martins", email: "lucas.m@empresa.com", distanciaKm: 5.6, calorias: 370, tempoAtividadeMin: 45, pontos: 520 },
   { nome: "Marina Alves", email: "marina.a@empresa.com", distanciaKm: 2.4, calorias: 190, tempoAtividadeMin: 22, pontos: 240 },
