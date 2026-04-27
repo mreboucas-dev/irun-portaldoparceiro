@@ -23,6 +23,8 @@ export default function Equipe() {
   const [membros, setMembros] = useState(equipeData);
   const [dragging, setDragging] = useState(false);
   const [uploaded, setUploaded] = useState(false);
+  const [buscaApp, setBuscaApp] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const filtered = membros.filter((m) => {
     return m.nome.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase());
@@ -37,6 +39,38 @@ export default function Equipe() {
     setUploaded(true);
   }, [membros.length]);
 
+  const emailsNaEquipe = useMemo(
+    () => new Set(membros.map((m) => m.email.toLowerCase())),
+    [membros],
+  );
+
+  const resultadosBusca = useMemo(() => {
+    const q = buscaApp.trim().toLowerCase();
+    if (q.length < 2) return [];
+    return usuariosAppIrun.filter(
+      (u) =>
+        u.nome.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q) ||
+        u.username.toLowerCase().includes(q),
+    );
+  }, [buscaApp]);
+
+  const handleAdicionarUsuario = (usuario: typeof usuariosAppIrun[number]) => {
+    setMembros((prev) => [
+      ...prev,
+      {
+        id: prev.length + 1000,
+        nome: usuario.nome,
+        email: usuario.email,
+        distanciaKm: usuario.distanciaKm,
+        calorias: usuario.calorias,
+        tempoAtividadeMin: usuario.tempoAtividadeMin,
+        pontos: usuario.pontos,
+      },
+    ]);
+    toast.success(`${usuario.nome} adicionado à equipe`);
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -44,12 +78,99 @@ export default function Equipe() {
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">Gestão de Equipe</h1>
           <p className="text-sm text-muted-foreground">{membros.length} colaboradores cadastrados</p>
         </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="gold-gradient text-primary-foreground font-semibold hover:opacity-90 w-full sm:w-auto">
-              <Upload className="w-4 h-4 mr-2" /> Importar CSV
-            </Button>
-          </DialogTrigger>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="font-semibold w-full sm:w-auto">
+                <UserPlus className="w-4 h-4 mr-2" /> Buscar no app
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg">
+              <DialogHeader>
+                <DialogTitle>Adicionar colaborador</DialogTitle>
+                <DialogDescription>
+                  Busque por nome, email ou usuário na base de usuários do app iRun.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  autoFocus
+                  placeholder="Digite ao menos 2 caracteres..."
+                  value={buscaApp}
+                  onChange={(e) => setBuscaApp(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+
+              <div className="max-h-[55vh] overflow-y-auto -mx-6 px-6">
+                {buscaApp.trim().length < 2 ? (
+                  <div className="text-center py-10 text-sm text-muted-foreground">
+                    <Search className="w-8 h-8 mx-auto mb-2 opacity-40" />
+                    Digite ao menos 2 caracteres para buscar usuários do app.
+                  </div>
+                ) : resultadosBusca.length === 0 ? (
+                  <div className="text-center py-10 text-sm text-muted-foreground">
+                    Nenhum usuário encontrado para "{buscaApp}".
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      {resultadosBusca.length} resultado{resultadosBusca.length > 1 ? "s" : ""}
+                    </p>
+                    <ul className="space-y-2">
+                      {resultadosBusca.map((u) => {
+                        const jaNaEquipe = emailsNaEquipe.has(u.email.toLowerCase());
+                        const inicial = u.nome.charAt(0).toUpperCase();
+                        return (
+                          <li
+                            key={u.id}
+                            className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-muted/40 transition-colors"
+                          >
+                            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center shrink-0">
+                              {inicial}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-foreground truncate">{u.nome}</p>
+                              <p className="text-xs text-muted-foreground truncate">
+                                {u.email} · @{u.username}
+                              </p>
+                            </div>
+                            {jaNaEquipe ? (
+                              <Badge variant="secondary" className="gap-1 shrink-0">
+                                <Check className="w-3 h-3" /> Já na equipe
+                              </Badge>
+                            ) : (
+                              <Button
+                                size="sm"
+                                onClick={() => handleAdicionarUsuario(u)}
+                                className="shrink-0 gold-gradient text-primary-foreground hover:opacity-90"
+                              >
+                                <Plus className="w-3.5 h-3.5 mr-1" /> Adicionar
+                              </Button>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
+
+              <div className="flex justify-end pt-2 border-t border-border">
+                <Button variant="ghost" onClick={() => setSearchOpen(false)}>
+                  Concluir
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="gold-gradient text-primary-foreground font-semibold hover:opacity-90 w-full sm:w-auto">
+                <Upload className="w-4 h-4 mr-2" /> Importar CSV
+              </Button>
+            </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Importar Colaboradores</DialogTitle>
