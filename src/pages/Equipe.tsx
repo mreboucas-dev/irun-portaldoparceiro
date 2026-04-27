@@ -280,6 +280,7 @@ export default function Equipe() {
                 <TableHead className="text-right hidden md:table-cell">Calorias</TableHead>
                 <TableHead className="text-right hidden md:table-cell">Tempo (min)</TableHead>
                 <TableHead className="text-right">Pontos</TableHead>
+                <TableHead className="text-right w-16">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -294,6 +295,37 @@ export default function Equipe() {
                   <TableCell className="text-right font-mono text-sm hidden md:table-cell">{m.calorias.toLocaleString()}</TableCell>
                   <TableCell className="text-right font-mono text-sm hidden md:table-cell">{m.tempoAtividadeMin}</TableCell>
                   <TableCell className="text-right font-mono font-semibold text-sm">{m.pontos}</TableCell>
+                  <TableCell className="text-right">
+                    <AlertDialog open={membroParaRemover === m.id} onOpenChange={(open) => !open && setMembroParaRemover(null)}>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => setMembroParaRemover(m.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Remover colaborador?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tem certeza que deseja remover <strong>{m.nome}</strong> da equipe? Essa ação não pode ser desfeita.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel onClick={() => setMembroParaRemover(null)}>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            onClick={() => handleRemoverMembro(m.id)}
+                          >
+                            Remover
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
