@@ -284,10 +284,39 @@ export default function Equipe() {
       </GlassCard>
 
       <GlassCard className="animate-fade-in-up">
-        <div className="mb-4">
+        <div className="mb-4 space-y-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Buscar por nome ou email..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {([
+              { key: "todos", label: "Todos", icon: Users },
+              { key: "alto", label: "Alto engajamento", icon: TrendingUp },
+              { key: "medio", label: "Médio engajamento", icon: Minus },
+              { key: "baixo", label: "Baixo engajamento", icon: TrendingDown },
+            ] as const).map(({ key, label, icon: Icon }) => {
+              const ativo = filtroEngajamento === key;
+              return (
+                <Button
+                  key={key}
+                  type="button"
+                  variant={ativo ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFiltroEngajamento(key)}
+                  className={`rounded-full text-xs ${ativo ? "" : "bg-background"}`}
+                >
+                  <Icon className="w-3.5 h-3.5 mr-1.5" />
+                  {label}
+                  <Badge
+                    variant={ativo ? "secondary" : "outline"}
+                    className="ml-2 px-1.5 py-0 text-[10px] font-semibold"
+                  >
+                    {contagemNiveis[key]}
+                  </Badge>
+                </Button>
+              );
+            })}
           </div>
         </div>
 
