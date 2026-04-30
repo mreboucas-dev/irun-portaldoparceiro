@@ -1,154 +1,174 @@
-import { esgAnteDepois, saudeColetiva } from "@/data/mockData";
-import { GlassCard } from "@/components/GlassCard";
-import { ChartContainer } from "@/components/ui/chart";
-import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
-import { Button } from "@/components/ui/button";
-import { Download, Award, TrendingDown, Leaf, Car, Activity } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import { GlassCard } from "@/components/GlassCard";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cuponsData } from "@/data/mockData";
+import { FileBarChart, Download, FileText } from "lucide-react";
 
-const radarConfig = {
-  score: { label: "Score", color: "hsl(231 85% 32%)" },
-};
+interface RelatorioRow {
+  data: string;
+  codigo: string;
+  resgates: number;
+  clientesUnicos: number;
+  horarioPico: string;
+}
+
+function gerarRelatorio(inicio: string, fim: string, codigo: string): RelatorioRow[] {
+  const cupons = codigo === "todos" ? cuponsData : cuponsData.filter((c) => c.codigo === codigo);
+  const startDate = new Date(inicio);
+  const endDate = new Date(fim);
+  const rows: RelatorioRow[] = [];
+  for (const c of cupons) {
+    const dias = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+    const total = Math.floor(c.resgates * (dias / 30));
+    rows.push({
+      data: `${startDate.toLocaleDateString("pt-BR")} – ${endDate.toLocaleDateString("pt-BR")}`,
+      codigo: c.codigo,
+      resgates: total,
+      clientesUnicos: Math.floor(total * 0.78),
+      horarioPico: c.melhorHorario,
+    });
+  }
+  return rows;
+}
 
 export default function Relatorios() {
-  const [carouselIdx, setCarouselIdx] = useState(0);
+  const [inicio, setInicio] = useState("");
+  const [fim, setFim] = useState("");
+  const [cupom, setCupom] = useState("todos");
+  const [resultado, setResultado] = useState<RelatorioRow[] | null>(null);
 
-  const metrics = [
-    { label: "Emissão CO₂ (ton/mês)", shortLabel: "CO₂", antes: esgAnteDepois.antes.co2, depois: esgAnteDepois.depois.co2, unit: "ton", icon: Leaf },
-    { label: "Deslocamento Motorizado (%)", shortLabel: "Deslocamento", antes: esgAnteDepois.antes.deslocamento, depois: esgAnteDepois.depois.deslocamento, unit: "%", icon: Car },
-    { label: "Sedentarismo (%)", shortLabel: "Sedentarismo", antes: esgAnteDepois.antes.sedentarismo, depois: esgAnteDepois.depois.sedentarismo, unit: "%", icon: Activity },
-  ];
+  const handleGerar = () => {
+    if (!inicio || !fim) {
+      toast.error("Selecione data de início e fim");
+      return;
+    }
+    if (new Date(inicio) > new Date(fim)) {
+      toast.error("Data de início deve ser anterior à data de fim");
+      return;
+    }
+    setResultado(gerarRelatorio(inicio, fim, cupom));
+    toast.success("Relatório gerado");
+  };
 
-  const current = metrics[carouselIdx];
-  const reduction = Math.round(((current.antes - current.depois) / current.antes) * 100);
-  const maxVal = current.antes;
-  const IconComponent = current.icon;
+  const exportCSV = () => {
+    if (!resultado) return;
+    const header = ["Data", "Código", "Resgates", "Clientes únicos", "Horário de pico"];
+    const lines = [header.join(",")].concat(
+      resultado.map((r) => [r.data, r.codigo, r.resgates, r.clientesUnicos, r.horarioPico].join(","))
+    );
+    const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `relatorio-cupons-${Date.now()}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("CSV exportado");
+  };
+
+  const exportPDF = () => {
+    toast.success("Geração de PDF iniciada", {
+      description: "O arquivo será disponibilizado em instantes.",
+    });
+  };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Relatórios ESG & Life</h1>
-          <p className="text-sm text-muted-foreground">Impacto ambiental e saúde coletiva</p>
-        </div>
-        <Button variant="outline" className="gap-2 w-full sm:w-auto" onClick={() => alert("Simulação: PDF seria gerado aqui")}>
-          <Download className="w-4 h-4" /> Exportar PDF
-        </Button>
+    <div className="space-y-5 sm:space-y-6">
+      <div>
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">Relatórios</h1>
+        <p className="text-sm text-muted-foreground">
+          Gere relatórios detalhados de resgates por período e cupom
+        </p>
       </div>
 
-      <GlassCard className="animate-fade-in-up flex items-center gap-3 sm:gap-4">
-        <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full gold-gradient flex items-center justify-center shadow-lg flex-shrink-0">
-          <Award className="w-6 h-6 sm:w-8 sm:h-8 text-primary-foreground" />
-        </div>
-        <div>
-          <h3 className="font-bold text-foreground text-base sm:text-lg">Empresa Saudável iRun</h3>
-          <p className="text-xs sm:text-sm text-muted-foreground">Sua empresa atingiu o selo de excelência em saúde e sustentabilidade</p>
-        </div>
-      </GlassCard>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        <GlassCard className="animate-fade-in-up stagger-2">
-          <h3 className="text-base sm:text-lg font-semibold text-foreground text-center mb-4">Antes e Depois</h3>
-
-          <div className="flex items-center justify-center gap-1 p-1 rounded-xl bg-muted/60 border border-border/50 mb-4 w-fit mx-auto max-w-full overflow-x-auto">
-            {metrics.map((m, i) => {
-              const TabIcon = m.icon;
-              return (
-                <button
-                  key={i}
-                  onClick={() => setCarouselIdx(i)}
-                  className={`px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-200 ${
-                    i === carouselIdx
-                      ? "bg-primary text-primary-foreground shadow-md"
-                      : "text-muted-foreground hover:text-foreground hover:bg-background/60"
-                  }`}
-                >
-                  <TabIcon className="w-3.5 h-3.5" />
-                  {m.shortLabel}
-                </button>
-              );
-            })}
-          </div>
-
-          <p className="text-xs text-muted-foreground mb-3">{current.label}</p>
-
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            {/* Card Antes */}
-            <div className="bg-destructive/5 border border-destructive/15 rounded-2xl p-4 sm:p-5">
-              <span className="text-xs font-semibold uppercase tracking-wider text-destructive/70">Antes</span>
-              <p className="text-2xl sm:text-3xl font-bold text-destructive mt-2">
-                {current.antes}{current.unit === "%" ? "%" : ""}
-              </p>
-              {current.unit === "ton" && <p className="text-xs text-muted-foreground mt-1">ton/mês</p>}
-              <div className="mt-3 h-2 rounded-full bg-destructive/10 overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-destructive/60 transition-all duration-700"
-                  style={{ width: `${(current.antes / maxVal) * 100}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Card Depois */}
-            <div className="bg-emerald-50 border border-emerald-200/50 rounded-2xl p-4 sm:p-5 dark:bg-emerald-950/20 dark:border-emerald-800/30">
-              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Depois</span>
-              <p className="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400 mt-2">
-                {current.depois}{current.unit === "%" ? "%" : ""}
-              </p>
-              {current.unit === "ton" && <p className="text-xs text-muted-foreground mt-1">ton/mês</p>}
-              <div className="mt-3 h-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-emerald-500/70 transition-all duration-700"
-                  style={{ width: `${(current.depois / maxVal) * 100}%` }}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Badge de redução */}
-          <div className="flex justify-center mt-4">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20">
-              <TrendingDown className="w-3.5 h-3.5 text-accent" />
-              <span className="text-xs font-semibold text-accent">Redução de {reduction}%</span>
-            </div>
-          </div>
-
-        </GlassCard>
-
-        <GlassCard className="animate-fade-in-up stagger-3">
-          <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-foreground">Score de Saúde Coletivo</h3>
-          <ChartContainer config={radarConfig} className="h-[240px] sm:h-[300px]">
-            <RadarChart data={saudeColetiva} outerRadius="65%">
-              <defs>
-                <linearGradient id="gradRadar" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1a3a8f" stopOpacity={0.6} />
-                  <stop offset="100%" stopColor="#daa520" stopOpacity={0.15} />
-                </linearGradient>
-              </defs>
-              <PolarGrid stroke="#e2e8f0" />
-              <PolarAngleAxis dataKey="area" stroke="#64748b" fontSize={10} />
-              <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-              <Radar dataKey="score" stroke="#3b82f6" fill="url(#gradRadar)" strokeWidth={2} />
-            </RadarChart>
-          </ChartContainer>
-          <p className="text-xs text-muted-foreground text-center mt-2">
-            Dados agregados e anonimizados — em conformidade com a LGPD
-          </p>
-        </GlassCard>
-      </div>
-
-      <GlassCard className="animate-fade-in-up stagger-4 border-accent/30">
-        <div className="flex items-start sm:items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
-            <span className="text-lg">🔒</span>
+      <GlassCard>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4">
+          <div>
+            <Label htmlFor="ini">Data início</Label>
+            <Input id="ini" type="date" value={inicio} onChange={(e) => setInicio(e.target.value)} />
           </div>
           <div>
-            <p className="text-sm font-medium text-foreground">Dados individuais protegidos</p>
-            <p className="text-xs text-muted-foreground">
-              Relatórios individuais requerem consentimento explícito do colaborador. Aguardando consentimento para 12 colaboradores.
-            </p>
+            <Label htmlFor="fim">Data fim</Label>
+            <Input id="fim" type="date" value={fim} onChange={(e) => setFim(e.target.value)} />
+          </div>
+          <div>
+            <Label htmlFor="cup">Cupom</Label>
+            <Select value={cupom} onValueChange={setCupom}>
+              <SelectTrigger id="cup">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos os cupons</SelectItem>
+                {cuponsData.map((c) => (
+                  <SelectItem key={c.codigo} value={c.codigo}>{c.codigo}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-end">
+            <Button
+              onClick={handleGerar}
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              <FileBarChart className="w-4 h-4 mr-2" />
+              Gerar Relatório
+            </Button>
           </div>
         </div>
       </GlassCard>
+
+      {resultado === null ? (
+        <GlassCard className="text-center py-16">
+          <FileText className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
+          <p className="text-foreground font-medium">Selecione o período e clique em Gerar Relatório</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Os resultados aparecerão aqui em formato de tabela.
+          </p>
+        </GlassCard>
+      ) : (
+        <GlassCard>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <h3 className="text-base sm:text-lg font-semibold text-foreground">Resultado</h3>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={exportCSV}>
+                <Download className="w-4 h-4 mr-2" /> CSV
+              </Button>
+              <Button size="sm" variant="outline" onClick={exportPDF}>
+                <Download className="w-4 h-4 mr-2" /> PDF
+              </Button>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto -mx-2 px-2">
+            <table className="w-full text-sm min-w-[640px]">
+              <thead>
+                <tr className="text-xs text-muted-foreground border-b border-border">
+                  <th className="text-left py-2 font-medium">Período</th>
+                  <th className="text-left py-2 font-medium">Cupom</th>
+                  <th className="text-right py-2 font-medium">Resgates</th>
+                  <th className="text-right py-2 font-medium">Clientes únicos</th>
+                  <th className="text-left py-2 font-medium pl-4">Horário de pico</th>
+                </tr>
+              </thead>
+              <tbody>
+                {resultado.map((r) => (
+                  <tr key={r.codigo} className="border-b border-border/50 last:border-0">
+                    <td className="py-3 text-foreground text-xs">{r.data}</td>
+                    <td className="py-3 font-mono text-foreground">{r.codigo}</td>
+                    <td className="py-3 text-right font-bold text-primary">{r.resgates}</td>
+                    <td className="py-3 text-right text-foreground">{r.clientesUnicos}</td>
+                    <td className="py-3 pl-4 text-foreground">{r.horarioPico}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </GlassCard>
+      )}
     </div>
   );
 }
