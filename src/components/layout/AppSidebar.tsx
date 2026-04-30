@@ -3,10 +3,9 @@ import {
   LayoutDashboard,
   Ticket,
   FileText,
-  Users,
-  Trophy,
   FileBarChart,
   ScanLine,
+  Send,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -22,17 +21,13 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const mainItems = [
-  { title: "Validação de Cupom", url: "/validacao", icon: ScanLine },
+const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Cupons", url: "/cupons", icon: Ticket },
-  { title: "Contratos", url: "/contratos", icon: FileText },
-];
-
-const corpoItems = [
-  { title: "Equipe", url: "/equipe", icon: Users },
-  { title: "Desafios", url: "/desafios", icon: Trophy },
+  { title: "Validação de Cupom", url: "/validacao", icon: ScanLine },
+  { title: "Meus Cupons", url: "/cupons", icon: Ticket },
   { title: "Relatórios", url: "/relatorios", icon: FileBarChart },
+  { title: "Contratos", url: "/contratos", icon: FileText },
+  { title: "Solicitações", url: "/solicitacoes", icon: Send },
 ];
 
 export function AppSidebar() {
@@ -54,40 +49,11 @@ export function AppSidebar() {
 
         <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground/50 text-xs uppercase tracking-wider">
-            {!collapsed && "Geral"}
+            {!collapsed && "Portal do Parceiro"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                    tooltip={item.title}
-                  >
-                    <NavLink
-                      to={item.url}
-                      end
-                      className="transition-all duration-200 hover:bg-sidebar-accent"
-                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                    >
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/50 text-xs uppercase tracking-wider">
-            {!collapsed && "Corporativo"}
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {corpoItems.map((item) => (
+              {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
