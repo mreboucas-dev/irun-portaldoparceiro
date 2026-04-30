@@ -52,12 +52,12 @@ export default function ValidacaoCupom() {
       id: `v${Date.now()}`,
       codigo: parsed.data,
       data: new Date().toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }),
-      resultado: r.valido ? "Aprovado" : "Recusado",
-      motivo: r.valido ? undefined : motivoLabel[r.motivo],
+      resultado: r.valido === true ? "Aprovado" : "Recusado",
+      motivo: r.valido === true ? undefined : motivoLabel[r.motivo],
     };
     setHistorico((prev) => [log, ...prev].slice(0, 10));
 
-    if (r.valido) {
+    if (r.valido === true) {
       setResultado({ tipo: "valido", data: r });
       toast.success("Cupom validado com sucesso");
     } else {
