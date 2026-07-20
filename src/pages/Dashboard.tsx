@@ -69,8 +69,7 @@ function KpiCard({
   );
 }
 
-const dayChartConfig = { resgates: { label: "Resgates", color: "hsl(231 85% 32%)" } };
-const hourChartConfig = { resgates: { label: "Resgates", color: "hsl(43 75% 49%)" } };
+  const kpiChartConfig = { resgates: { label: "Resgates", color: "hsl(var(--primary))" } };
 
 export default function Dashboard() {
   const kpis = Object.values(kpisDashboard);
