@@ -51,18 +51,18 @@ function KpiCard({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.45, delay: delay / 1000 }}
       whileHover={{ y: -3 }}
-      className="glass-card rounded-3xl p-5 sm:p-7"
+      className="glass-card rounded-xl p-5 sm:p-7"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs sm:text-sm text-muted-foreground mb-1">{label}</p>
-          <p className="text-2xl sm:text-3xl font-bold text-foreground">{value}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mb-1 font-medium">{label}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{value}</p>
           <span className={cn("text-xs sm:text-sm font-medium mt-1 inline-block", isPositive ? "text-emerald-600" : "text-destructive")}>
             {trend} vs mês anterior
           </span>
         </div>
-        <div className="w-11 h-11 rounded-xl gold-gradient flex items-center justify-center shadow-md shrink-0">
-          <Icon className="w-5 h-5 text-primary-foreground" />
+        <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+          <Icon className="w-5 h-5" />
         </div>
       </div>
     </motion.div>
