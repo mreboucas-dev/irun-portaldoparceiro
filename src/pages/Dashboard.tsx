@@ -99,17 +99,11 @@ export default function Dashboard() {
           </h3>
           <ChartContainer config={dayChartConfig} className="h-[240px] sm:h-[300px]">
             <BarChart data={resgatesPorDia}>
-              <defs>
-                <linearGradient id="gradDia" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1a3a8f" />
-                  <stop offset="100%" stopColor="#0b2297" />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-              <XAxis dataKey="dia" stroke="#94a3b8" fontSize={11} axisLine={false} tickLine={false} />
-              <YAxis stroke="#94a3b8" fontSize={10} width={32} axisLine={false} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+              <XAxis dataKey="dia" stroke="hsl(var(--muted-foreground))" fontSize={11} axisLine={false} tickLine={false} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} width={32} axisLine={false} tickLine={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="resgates" fill="url(#gradDia)" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="resgates" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ChartContainer>
         </GlassCard>
@@ -120,17 +114,11 @@ export default function Dashboard() {
           </h3>
           <ChartContainer config={hourChartConfig} className="h-[240px] sm:h-[300px]">
             <LineChart data={resgatesPorHora}>
-              <defs>
-                <linearGradient id="gradHora" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#c4952a" />
-                  <stop offset="100%" stopColor="#daa520" />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-              <XAxis dataKey="hora" stroke="#94a3b8" fontSize={9} interval={2} axisLine={false} tickLine={false} />
-              <YAxis stroke="#94a3b8" fontSize={10} width={32} axisLine={false} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+              <XAxis dataKey="hora" stroke="hsl(var(--muted-foreground))" fontSize={9} interval={2} axisLine={false} tickLine={false} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} width={32} axisLine={false} tickLine={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Line type="monotone" dataKey="resgates" stroke="url(#gradHora)" strokeWidth={2.5} dot={{ r: 2.5, fill: "#daa520" }} />
+              <Line type="monotone" dataKey="resgates" stroke="hsl(var(--accent))" strokeWidth={2} dot={{ r: 2.5, fill: "hsl(var(--accent))" }} />
             </LineChart>
           </ChartContainer>
         </GlassCard>
