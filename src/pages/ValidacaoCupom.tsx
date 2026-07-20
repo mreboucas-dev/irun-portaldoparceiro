@@ -84,7 +84,7 @@ export default function ValidacaoCupom() {
       <GlassCard className="p-6 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex justify-center">
-            <div className="rounded-2xl bg-primary/10 p-4">
+            <div className="rounded-xl bg-primary/10 p-4">
               <QrCode className="h-10 w-10 text-primary" />
             </div>
           </div>
@@ -127,7 +127,7 @@ export default function ValidacaoCupom() {
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.25 }}
           >
-            <div className="rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 p-6">
+            <div className="rounded-xl border-2 border-emerald-500 bg-emerald-500/10 p-6">
               <div className="flex items-start gap-4">
                 <div className="rounded-full bg-emerald-500/20 p-2">
                   <CheckCircle2 className="h-6 w-6 text-emerald-600" />
@@ -160,7 +160,7 @@ export default function ValidacaoCupom() {
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.25 }}
           >
-            <div className="rounded-2xl border-2 border-destructive bg-destructive/10 p-6">
+            <div className="rounded-xl border-2 border-destructive bg-destructive/10 p-6">
               <div className="flex items-start gap-4">
                 <div className="rounded-full bg-destructive/20 p-2">
                   <XCircle className="h-6 w-6 text-destructive" />

@@ -26,27 +26,27 @@ export function KpiCard({ label, value, trend, icon, delay = 0 }: KpiCardProps) 
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.5, delay: delay / 1000, ease: [0.25, 0.46, 0.45, 0.94] }}
       whileHover={{ y: -3, boxShadow: "0 4px 16px rgba(0,0,0,0.08)" }}
-      className="glass-card rounded-3xl p-5 sm:p-8 transition-colors duration-200"
+      className="glass-card rounded-xl p-5 sm:p-7 transition-colors duration-200"
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-muted-foreground mb-1">{label}</p>
-          <p className="text-2xl sm:text-3xl font-bold text-foreground">{value}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mb-1 font-medium">{label}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{value}</p>
           <motion.span
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: (delay + 200) / 1000 }}
-            className={`text-sm font-medium mt-1 inline-block ${isPositive ? "text-emerald-500" : "text-destructive"}`}
+            className={`text-sm font-medium mt-1 inline-block ${isPositive ? "text-emerald-600" : "text-destructive"}`}
           >
             {trend}
           </motion.span>
         </div>
         <motion.div
-          whileHover={{ rotate: 8, scale: 1.1 }}
+          whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300, damping: 15 }}
-          className="w-12 h-12 rounded-xl gold-gradient flex items-center justify-center shadow-md"
+          className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center"
         >
-          <Icon className="w-6 h-6 text-primary-foreground" />
+          <Icon className="w-5 h-5" />
         </motion.div>
       </div>
     </motion.div>
