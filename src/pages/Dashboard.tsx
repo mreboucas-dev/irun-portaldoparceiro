@@ -147,7 +147,7 @@ export default function Dashboard() {
                     <span className="text-muted-foreground">{f.percentual}%</span>
                   </div>
                   <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div className="h-full gold-gradient" style={{ width: `${f.percentual}%` }} />
+                    <div className="h-full bg-primary" style={{ width: `${f.percentual}%` }} />
                   </div>
                 </div>
               ))}
