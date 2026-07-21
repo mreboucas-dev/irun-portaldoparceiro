@@ -150,10 +150,16 @@ export default function ValidacaoCupom() {
             <div className="rounded-xl border-2 border-emerald-500 bg-emerald-500/10 p-6">
               <div className="flex items-start gap-4">
                 <div className="rounded-full bg-emerald-500/20 p-2">
-                  <CheckCircle2 className="h-6 w-6 text-emerald-600" />
+                  {resultado.confirmado ? (
+                    <BadgeCheck className="h-6 w-6 text-emerald-600" />
+                  ) : (
+                    <CheckCircle2 className="h-6 w-6 text-emerald-600" />
+                  )}
                 </div>
                 <div className="flex-1 space-y-1">
-                  <h3 className="text-lg font-semibold text-emerald-700">Cupom validado</h3>
+                  <h3 className="text-lg font-semibold text-emerald-700">
+                    {resultado.confirmado ? "Resgate confirmado" : "Cupom validado"}
+                  </h3>
                   <p className="font-medium text-foreground">
                     {resultado.data.cupom.nome} — {resultado.data.cupom.desconto}
                   </p>
@@ -163,12 +169,28 @@ export default function ValidacaoCupom() {
                   <p className="text-sm text-muted-foreground">
                     Validade: {new Date(resultado.data.cupom.fim).toLocaleDateString("pt-BR")}
                   </p>
+                  {resultado.confirmado && (
+                    <p className="text-sm text-emerald-700 pt-1">
+                      Este código foi marcado como utilizado.
+                    </p>
+                  )}
                 </div>
               </div>
-              <Button onClick={reset} variant="outline" className="mt-4 w-full">
+              {!resultado.confirmado && (
+                <Button
+                  onClick={handleConfirmarResgate}
+                  size="lg"
+                  className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold"
+                >
+                  <BadgeCheck className="mr-2 h-4 w-4" />
+                  Confirmar resgate
+                </Button>
+              )}
+              <Button onClick={reset} variant="outline" className="mt-2 w-full">
                 Validar outro cupom
               </Button>
             </div>
+
           </motion.div>
         )}
 
