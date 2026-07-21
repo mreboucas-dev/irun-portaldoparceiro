@@ -366,9 +366,8 @@ export default function Solicitacoes() {
                 const hasDetails = !!s.detalhes && Object.values(s.detalhes).some((v) => v !== undefined && v !== "");
                 const open = expandedId === s.id;
                 return (
-                  <>
+                  <Fragment key={s.id}>
                     <tr
-                      key={s.id}
                       className={`border-b border-border/50 last:border-0 ${hasDetails ? "cursor-pointer hover:bg-muted/40" : ""}`}
                       onClick={() => hasDetails && setExpandedId(open ? null : s.id)}
                     >
