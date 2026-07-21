@@ -159,10 +159,37 @@ export type ResultadoValidacao =
 
 const codigosUtilizados = new Set<string>(["VERAO20-USADO"]);
 
+export const RESGATES_CONFIRMADOS_KEY = "portal-parceiro:resgates-confirmados";
+
+function lerResgatesConfirmados(): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const raw = window.localStorage.getItem(RESGATES_CONFIRMADOS_KEY);
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw) as string[];
+    return new Set(Array.isArray(arr) ? arr : []);
+  } catch {
+    return new Set();
+  }
+}
+
+export function confirmarResgate(codigo: string): void {
+  if (typeof window === "undefined") return;
+  const code = codigo.trim().toUpperCase();
+  const set = lerResgatesConfirmados();
+  set.add(code);
+  window.localStorage.setItem(RESGATES_CONFIRMADOS_KEY, JSON.stringify([...set]));
+}
+
+export function isResgateConfirmado(codigo: string): boolean {
+  return lerResgatesConfirmados().has(codigo.trim().toUpperCase());
+}
+
 export function validarCodigoCupom(codigo: string): ResultadoValidacao {
   const code = codigo.trim().toUpperCase();
-  if (codigosUtilizados.has(code)) {
-    return { valido: false, motivo: "ja_utilizado" };
+  if (codigosUtilizados.has(code) || lerResgatesConfirmados().has(code)) {
+    const cupom = cuponsData.find((c) => c.codigo === code);
+    return { valido: false, motivo: "ja_utilizado", cupom };
   }
   const cupom = cuponsData.find((c) => c.codigo === code);
   if (!cupom) return { valido: false, motivo: "invalido" };
@@ -171,6 +198,7 @@ export function validarCodigoCupom(codigo: string): ResultadoValidacao {
   }
   return { valido: true, cupom };
 }
+
 
 // Histórico das últimas validações
 export interface ValidacaoLog {
