@@ -424,7 +424,7 @@ export default function Solicitacoes() {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 );
               })}
             </tbody>
