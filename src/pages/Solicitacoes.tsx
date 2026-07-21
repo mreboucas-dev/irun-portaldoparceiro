@@ -91,6 +91,26 @@ export default function Solicitacoes() {
 
   const cuponsExpirados = cuponsData.filter((c) => c.status === "Expirado");
 
+  const resumoCampanha = () => {
+    const partes: string[] = [];
+    if (tipoCupom) partes.push(`Cupom ${tipoCupomLabel[tipoCupom].toLowerCase()}`);
+    if (limiteResgate) {
+      if (limiteResgate === "ilimitado") partes.push("ilimitado");
+      else if (quantidadeLimite) partes.push(`limitado a ${quantidadeLimite} resgates`);
+      else partes.push("limitado");
+    }
+    if (tipoDesconto) {
+      if (tipoDesconto === "percentual" && valorDesconto) partes.push(`${valorDesconto}% OFF`);
+      else if (tipoDesconto === "valor" && valorDesconto) partes.push(`R$ ${valorDesconto}`);
+      else if (tipoDesconto === "brinde" && descricaoBrinde) partes.push(`brinde: ${descricaoBrinde}`);
+      else if (tipoDesconto === "percentual") partes.push("percentual");
+      else if (tipoDesconto === "valor") partes.push("valor fixo");
+      else partes.push("brinde");
+    }
+    if (partes.length === 0) return "Preencha os campos acima para ver o resumo da campanha.";
+    return partes.join(", ");
+  };
+
   const handleEnviar = () => {
     if (modo === "renovacao") {
       if (!cupomRenovar) {
