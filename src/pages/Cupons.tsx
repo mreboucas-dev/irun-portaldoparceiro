@@ -2,8 +2,10 @@ import { useMemo, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { cuponsData, type StatusCupom } from "@/data/mockData";
-import { ChevronLeft, ChevronRight, Ticket, Send } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { cuponsData, type StatusCupom, type TipoCupom } from "@/data/mockData";
+import { useUtilizados } from "@/hooks/useUtilizados";
+import { ChevronLeft, ChevronRight, Ticket, Send, Repeat, Tag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +13,11 @@ const statusColors: Record<StatusCupom, string> = {
   Ativo: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
   Expirado: "bg-muted text-muted-foreground border-border",
   Esgotado: "bg-destructive/10 text-destructive border-destructive/30",
+};
+
+const tipoLabel: Record<TipoCupom, string> = {
+  uso_unico: "Uso único",
+  recorrente: "Recorrente",
 };
 
 type Filtro = "todos" | StatusCupom;
@@ -29,11 +36,47 @@ function isCupomAtivoNoDia(inicio: string, fim: string, year: number, month: num
   return new Date(inicio).getTime() <= d && d <= new Date(fim).getTime();
 }
 
+function UtilizadosInput({
+  id,
+  value,
+  onSave,
+}: {
+  id: number;
+  value: number;
+  onSave: (v: number) => void;
+}) {
+  const [local, setLocal] = useState(String(value));
+
+  // Sincroniza se o valor externo mudar (ex.: outro tab)
+  useMemo(() => setLocal(String(value)), [value]);
+
+  return (
+    <Input
+      id={`utilizados-${id}`}
+      type="number"
+      inputMode="numeric"
+      min={0}
+      value={local}
+      onChange={(e) => setLocal(e.target.value)}
+      onBlur={() => {
+        const n = parseInt(local, 10);
+        if (Number.isFinite(n) && n >= 0) onSave(n);
+        else setLocal(String(value));
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+      }}
+      className="h-8 text-sm"
+    />
+  );
+}
+
 export default function Cupons() {
   const [filtro, setFiltro] = useState<Filtro>("todos");
   const today = new Date();
   const [calMonth, setCalMonth] = useState(today.getMonth());
   const [calYear, setCalYear] = useState(today.getFullYear());
+  const { getUtilizados, setUtilizados } = useUtilizados();
 
   const filtered = useMemo(
     () => (filtro === "todos" ? cuponsData : cuponsData.filter((c) => c.status === filtro)),
@@ -101,33 +144,115 @@ export default function Cupons() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {filtered.map((c, i) => {
-            const utilizadoPct = Math.min(100, Math.round((c.resgates / c.meta) * 100));
+            const utilizados = getUtilizados(c.id);
+            const razao = c.resgates > 0 ? utilizados / c.resgates : 0;
+            const conversaoPct = Math.min(100, Math.round(razao * 100));
+            const usosPorUsuario = razao.toLocaleString("pt-BR", {
+              minimumFractionDigits: 1,
+              maximumFractionDigits: 1,
+            });
+            const barraPct = c.tipo === "uso_unico"
+              ? conversaoPct
+              : Math.min(100, Math.round((razao / 3) * 100)); // escala visual: 3× = cheio
+
             return (
               <GlassCard key={c.id} delay={i * 60}>
-                <div className="flex items-start justify-between mb-3">
+                <div className="flex items-start justify-between mb-3 gap-2">
                   <div className="min-w-0">
                     <h3 className="font-semibold text-foreground">{c.nome}</h3>
                     <p className="text-xs font-mono text-muted-foreground mt-0.5">{c.codigo}</p>
                   </div>
-                  <Badge variant="outline" className={statusColors[c.status]}>{c.status}</Badge>
+                  <div className="flex flex-col items-end gap-1">
+                    <Badge variant="outline" className={statusColors[c.status]}>{c.status}</Badge>
+                    <Badge
+                      variant="outline"
+                      className="bg-primary/5 text-primary border-primary/20 gap-1"
+                    >
+                      {c.tipo === "recorrente" ? <Repeat className="w-3 h-3" /> : <Tag className="w-3 h-3" />}
+                      {tipoLabel[c.tipo]}
+                    </Badge>
+                  </div>
                 </div>
+
                 <p className="text-2xl font-bold text-primary mb-3">{c.desconto}</p>
+
                 <div className="text-xs text-muted-foreground space-y-1 mb-3">
                   <p>Início: {new Date(c.inicio).toLocaleDateString("pt-BR")}</p>
                   <p>Fim: {new Date(c.fim).toLocaleDateString("pt-BR")}</p>
                 </div>
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-muted-foreground">{c.resgates} resgates</span>
-                    <span className="font-medium text-foreground">{utilizadoPct}%</span>
-                  </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className={cn("h-full", utilizadoPct >= 80 ? "bg-accent" : "bg-primary")}
-                      style={{ width: `${utilizadoPct}%` }}
-                    />
-                  </div>
+
+                {/* Campo editável: Cupons utilizados */}
+                <div className="mb-3">
+                  <label
+                    htmlFor={`utilizados-${c.id}`}
+                    className="text-xs font-medium text-foreground block mb-1"
+                  >
+                    Cupons utilizados
+                  </label>
+                  <UtilizadosInput
+                    id={c.id}
+                    value={utilizados}
+                    onSave={(v) => setUtilizados(c.id, v)}
+                  />
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    Some online + físico. Salva automaticamente ao sair do campo.
+                  </p>
                 </div>
+
+                {/* Métricas por tipo */}
+                {c.tipo === "uso_unico" ? (
+                  <div>
+                    <div className="grid grid-cols-3 gap-2 text-center mb-2">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Resgatados</p>
+                        <p className="text-sm font-semibold text-foreground">{c.resgates}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Utilizados</p>
+                        <p className="text-sm font-semibold text-foreground">{utilizados}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Conversão</p>
+                        <p className="text-sm font-semibold text-primary">{conversaoPct}%</p>
+                      </div>
+                    </div>
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-primary transition-[width]"
+                        style={{ width: `${conversaoPct}%` }}
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      Funil: resgatados → utilizados
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="grid grid-cols-3 gap-2 text-center mb-2">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Resgatados</p>
+                        <p className="text-sm font-semibold text-foreground">{c.resgates}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Utilizados</p>
+                        <p className="text-sm font-semibold text-foreground">{utilizados}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Por usuário</p>
+                        <p className="text-sm font-semibold text-primary">{usosPorUsuario}×</p>
+                      </div>
+                    </div>
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-accent transition-[width]"
+                        style={{ width: `${barraPct}%` }}
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      Recompra média — não é conversão.
+                    </p>
+                  </div>
+                )}
               </GlassCard>
             );
           })}
