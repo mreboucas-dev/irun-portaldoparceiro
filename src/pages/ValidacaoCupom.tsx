@@ -2,17 +2,19 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
 import { toast } from "sonner";
-import { CheckCircle2, XCircle, ScanLine, QrCode } from "lucide-react";
+import { CheckCircle2, XCircle, ScanLine, QrCode, BadgeCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GlassCard } from "@/components/GlassCard";
 import {
   validarCodigoCupom,
+  confirmarResgate,
   historicoValidacoes,
   type ResultadoValidacao,
   type ValidacaoLog,
 } from "@/data/mockData";
+
 
 const codigoSchema = z
   .string()
