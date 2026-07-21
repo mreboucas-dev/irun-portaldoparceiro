@@ -80,6 +80,7 @@ export const perfilAtividadePredominante = {
 // Cupons da empresa
 // ---------------------------------------------------------------------------
 export type StatusCupom = "Ativo" | "Expirado" | "Esgotado";
+export type TipoCupom = "uso_unico" | "recorrente";
 
 export interface Cupom {
   id: number;
@@ -87,9 +88,11 @@ export interface Cupom {
   codigo: string;
   desconto: string;
   status: StatusCupom;
+  tipo: TipoCupom;
   inicio: string;
   fim: string;
   resgates: number;
+  utilizados: number;
   meta: number;
   taxaResgate: number; // %
   melhorDia: string;
@@ -103,9 +106,11 @@ export const cuponsData: Cupom[] = [
     codigo: "SAUDE10",
     desconto: "10% OFF",
     status: "Ativo",
+    tipo: "uso_unico",
     inicio: "2026-04-01",
     fim: "2026-06-30",
     resgates: 412,
+    utilizados: 291, // ~71% de conversão
     meta: 600,
     taxaResgate: 22.7,
     melhorDia: "Quarta-feira",
@@ -117,9 +122,11 @@ export const cuponsData: Cupom[] = [
     codigo: "VERAO20",
     desconto: "20% OFF",
     status: "Expirado",
+    tipo: "uso_unico",
     inicio: "2025-12-01",
     fim: "2026-03-15",
     resgates: 289,
+    utilizados: 187, // ~65% de conversão
     meta: 400,
     taxaResgate: 14.3,
     melhorDia: "Sábado",
@@ -131,10 +138,12 @@ export const cuponsData: Cupom[] = [
     codigo: "FIDELIDADE15",
     desconto: "15% OFF",
     status: "Ativo",
+    tipo: "recorrente",
     inicio: "2026-03-01",
     fim: "2026-05-31",
     resgates: 425,
-    meta: 500, // 85% utilizado
+    utilizados: 892, // ~2,1× por usuário (recompra)
+    meta: 500,
     taxaResgate: 19.8,
     melhorDia: "Quarta-feira",
     melhorHorario: "13h",
