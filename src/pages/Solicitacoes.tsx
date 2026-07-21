@@ -367,6 +367,13 @@ export default function Solicitacoes() {
           </div>
         )}
 
+        {modo === "novo" && (
+          <div className="mt-5 p-3 rounded-xl bg-muted/40 border border-border">
+            <div className="text-xs text-muted-foreground mb-0.5">Resumo da campanha</div>
+            <div className="text-sm font-medium text-foreground">{resumoCampanha()}</div>
+          </div>
+        )}
+
         <Button onClick={handleEnviar} className="mt-5 bg-primary hover:bg-primary/90 text-primary-foreground">
           <Send className="w-4 h-4 mr-2" /> Enviar solicitação
         </Button>
