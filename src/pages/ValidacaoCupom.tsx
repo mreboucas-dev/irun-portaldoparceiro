@@ -2,17 +2,19 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
 import { toast } from "sonner";
-import { CheckCircle2, XCircle, ScanLine, QrCode } from "lucide-react";
+import { CheckCircle2, XCircle, ScanLine, QrCode, BadgeCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GlassCard } from "@/components/GlassCard";
 import {
   validarCodigoCupom,
+  confirmarResgate,
   historicoValidacoes,
   type ResultadoValidacao,
   type ValidacaoLog,
 } from "@/data/mockData";
+
 
 const codigoSchema = z
   .string()
@@ -23,7 +25,7 @@ const codigoSchema = z
 
 type Resultado =
   | { tipo: "idle" }
-  | { tipo: "valido"; data: Extract<ResultadoValidacao, { valido: true }> }
+  | { tipo: "valido"; data: Extract<ResultadoValidacao, { valido: true }>; confirmado: boolean }
   | { tipo: "invalido"; data: Extract<ResultadoValidacao, { valido: false }> };
 
 const motivoLabel: Record<"expirado" | "ja_utilizado" | "invalido", string> = {
@@ -31,6 +33,7 @@ const motivoLabel: Record<"expirado" | "ja_utilizado" | "invalido", string> = {
   ja_utilizado: "Este cupom já foi utilizado.",
   invalido: "Cupom inválido. Confira o código digitado.",
 };
+
 
 export default function ValidacaoCupom() {
   const [codigo, setCodigo] = useState("");
@@ -58,13 +61,30 @@ export default function ValidacaoCupom() {
     setHistorico((prev) => [log, ...prev].slice(0, 10));
 
     if (r.valido === true) {
-      setResultado({ tipo: "valido", data: r });
+      setResultado({ tipo: "valido", data: r, confirmado: false });
       toast.success("Cupom validado com sucesso");
     } else {
       setResultado({ tipo: "invalido", data: r });
       toast.error("Cupom inválido");
     }
   };
+
+  const handleConfirmarResgate = () => {
+    if (resultado.tipo !== "valido" || resultado.confirmado) return;
+    const cupom = resultado.data.cupom;
+    confirmarResgate(cupom.codigo);
+    setResultado({ ...resultado, confirmado: true });
+    const log: ValidacaoLog = {
+      id: `v${Date.now()}-c`,
+      codigo: cupom.codigo,
+      data: new Date().toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }),
+      resultado: "Aprovado",
+      motivo: "Resgate confirmado",
+    };
+    setHistorico((prev) => [log, ...prev].slice(0, 10));
+    toast.success("Resgate confirmado");
+  };
+
 
   const reset = () => {
     setCodigo("");
@@ -130,10 +150,16 @@ export default function ValidacaoCupom() {
             <div className="rounded-xl border-2 border-emerald-500 bg-emerald-500/10 p-6">
               <div className="flex items-start gap-4">
                 <div className="rounded-full bg-emerald-500/20 p-2">
-                  <CheckCircle2 className="h-6 w-6 text-emerald-600" />
+                  {resultado.confirmado ? (
+                    <BadgeCheck className="h-6 w-6 text-emerald-600" />
+                  ) : (
+                    <CheckCircle2 className="h-6 w-6 text-emerald-600" />
+                  )}
                 </div>
                 <div className="flex-1 space-y-1">
-                  <h3 className="text-lg font-semibold text-emerald-700">Cupom validado</h3>
+                  <h3 className="text-lg font-semibold text-emerald-700">
+                    {resultado.confirmado ? "Resgate confirmado" : "Cupom validado"}
+                  </h3>
                   <p className="font-medium text-foreground">
                     {resultado.data.cupom.nome} — {resultado.data.cupom.desconto}
                   </p>
@@ -143,12 +169,28 @@ export default function ValidacaoCupom() {
                   <p className="text-sm text-muted-foreground">
                     Validade: {new Date(resultado.data.cupom.fim).toLocaleDateString("pt-BR")}
                   </p>
+                  {resultado.confirmado && (
+                    <p className="text-sm text-emerald-700 pt-1">
+                      Este código foi marcado como utilizado.
+                    </p>
+                  )}
                 </div>
               </div>
-              <Button onClick={reset} variant="outline" className="mt-4 w-full">
+              {!resultado.confirmado && (
+                <Button
+                  onClick={handleConfirmarResgate}
+                  size="lg"
+                  className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold"
+                >
+                  <BadgeCheck className="mr-2 h-4 w-4" />
+                  Confirmar resgate
+                </Button>
+              )}
+              <Button onClick={reset} variant="outline" className="mt-2 w-full">
                 Validar outro cupom
               </Button>
             </div>
+
           </motion.div>
         )}
 
