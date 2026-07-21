@@ -139,8 +139,8 @@ export const cuponsData: Cupom[] = [
     desconto: "15% OFF",
     status: "Ativo",
     tipo: "recorrente",
-    inicio: "2026-03-01",
-    fim: "2026-05-31",
+    inicio: "2026-06-01",
+    fim: "2026-10-31",
     resgates: 425,
     utilizados: 892, // ~2,1× por usuário (recompra)
     meta: 500,
