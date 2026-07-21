@@ -25,7 +25,7 @@ const codigoSchema = z
 
 type Resultado =
   | { tipo: "idle" }
-  | { tipo: "valido"; data: Extract<ResultadoValidacao, { valido: true }> }
+  | { tipo: "valido"; data: Extract<ResultadoValidacao, { valido: true }>; confirmado: boolean }
   | { tipo: "invalido"; data: Extract<ResultadoValidacao, { valido: false }> };
 
 const motivoLabel: Record<"expirado" | "ja_utilizado" | "invalido", string> = {
@@ -33,6 +33,7 @@ const motivoLabel: Record<"expirado" | "ja_utilizado" | "invalido", string> = {
   ja_utilizado: "Este cupom já foi utilizado.",
   invalido: "Cupom inválido. Confira o código digitado.",
 };
+
 
 export default function ValidacaoCupom() {
   const [codigo, setCodigo] = useState("");
