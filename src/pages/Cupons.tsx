@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,7 @@ function UtilizadosInput({
   const [local, setLocal] = useState(String(value));
 
   // Sincroniza se o valor externo mudar (ex.: outro tab)
-  useMemo(() => setLocal(String(value)), [value]);
+  useEffect(() => setLocal(String(value)), [value]);
 
   return (
     <Input

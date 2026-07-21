@@ -6,10 +6,12 @@ import {
   perfilTopCidades,
   perfilAtividadePredominante,
   comparativoCupons,
-  benchmarking,
   avaliacaoEstabelecimento,
   empresaParceira,
+  cuponsData,
+  type TipoCupom,
 } from "@/data/mockData";
+import { useUtilizados } from "@/hooks/useUtilizados";
 import { GlassCard } from "@/components/GlassCard";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, LineChart, Line, CartesianGrid } from "recharts";
@@ -17,51 +19,68 @@ import {
   Gift,
   Ticket,
   Percent,
-  Users,
-  TrendingUp,
-  TrendingDown,
+  CheckCircle2,
   Star,
   MapPin,
   Activity,
   Trophy,
+  Users,
+  Repeat,
+  Tag,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-const kpiIcons = [Gift, Ticket, Percent, Users];
-
 function KpiCard({
   label,
   value,
   trend,
+  hint,
   Icon,
   delay = 0,
+  highlight = false,
 }: {
   label: string;
   value: string | number;
-  trend: string;
+  trend?: string;
+  hint?: string;
   Icon: React.ElementType;
   delay?: number;
+  highlight?: boolean;
 }) {
-  const isPositive = !trend.startsWith("-");
+  const isPositive = !trend || !trend.startsWith("-");
   return (
     <motion.div
       initial={{ opacity: 0, y: 16, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.45, delay: delay / 1000 }}
       whileHover={{ y: -3 }}
-      className="glass-card rounded-xl p-5 sm:p-7"
+      className={cn(
+        "glass-card rounded-xl p-5 sm:p-7",
+        highlight && "ring-1 ring-primary/30 bg-primary/[0.03]"
+      )}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs sm:text-sm text-muted-foreground mb-1 font-medium">{label}</p>
-          <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{value}</p>
-          <span className={cn("text-xs sm:text-sm font-medium mt-1 inline-block", isPositive ? "text-emerald-600" : "text-destructive")}>
-            {trend} vs mês anterior
-          </span>
+          <p className={cn(
+            "font-bold text-foreground tracking-tight",
+            highlight ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"
+          )}>{value}</p>
+          {trend && (
+            <span className={cn("text-xs sm:text-sm font-medium mt-1 inline-block", isPositive ? "text-emerald-600" : "text-destructive")}>
+              {trend} vs mês anterior
+            </span>
+          )}
+          {hint && (
+            <p className="text-[11px] text-muted-foreground mt-1">{hint}</p>
+          )}
         </div>
-        <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+        <div className={cn(
+          "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
+          highlight ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
+        )}>
           <Icon className="w-5 h-5" />
         </div>
       </div>
@@ -72,8 +91,23 @@ function KpiCard({
 const dayChartConfig = { resgates: { label: "Resgates", color: "hsl(var(--primary))" } };
 const hourChartConfig = { resgates: { label: "Resgates", color: "hsl(var(--accent))" } };
 
+const tipoLabel: Record<TipoCupom, string> = {
+  uso_unico: "Uso único",
+  recorrente: "Recorrente",
+};
+
 export default function Dashboard() {
-  const kpis = Object.values(kpisDashboard);
+  const { getUtilizados } = useUtilizados();
+
+  const totalUtilizados = cuponsData.reduce((acc, c) => acc + getUtilizados(c.id), 0);
+
+  const usoUnico = cuponsData.filter((c) => c.tipo === "uso_unico");
+  const somaResgatesUU = usoUnico.reduce((a, c) => a + c.resgates, 0);
+  const somaUtilizadosUU = usoUnico.reduce((a, c) => a + getUtilizados(c.id), 0);
+  const conversaoReal =
+    usoUnico.length === 0 || somaResgatesUU === 0
+      ? null
+      : (somaUtilizadosUU / somaResgatesUU) * 100;
 
   return (
     <div className="space-y-5 sm:space-y-8">
@@ -84,11 +118,37 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {/* KPIs */}
+      {/* KPIs — Cupons utilizados em destaque */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {kpis.map((kpi, i) => (
-          <KpiCard key={kpi.label} {...kpi} Icon={kpiIcons[i]} delay={i * 80} />
-        ))}
+        <KpiCard
+          label="Cupons utilizados"
+          value={totalUtilizados.toLocaleString("pt-BR")}
+          hint="Soma editada em Meus Cupons"
+          Icon={CheckCircle2}
+          highlight
+          delay={0}
+        />
+        <KpiCard
+          label={kpisDashboard.resgatesMes.label}
+          value={kpisDashboard.resgatesMes.value}
+          trend={kpisDashboard.resgatesMes.trend}
+          Icon={Gift}
+          delay={80}
+        />
+        <KpiCard
+          label={kpisDashboard.cuponsAtivos.label}
+          value={kpisDashboard.cuponsAtivos.value}
+          trend={kpisDashboard.cuponsAtivos.trend}
+          Icon={Ticket}
+          delay={160}
+        />
+        <KpiCard
+          label="Taxa de conversão"
+          value={conversaoReal === null ? "—" : `${conversaoReal.toFixed(1).replace(".", ",")}%`}
+          hint="cupons de uso único"
+          Icon={Percent}
+          delay={240}
+        />
       </div>
 
       {/* Gráficos */}
@@ -203,24 +263,23 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Comparativo + Benchmarking + Avaliação */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        <GlassCard className="lg:col-span-2" delay={800}>
+      {/* Comparativo + Conversão por cupom */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <GlassCard delay={800}>
           <div className="flex items-center gap-2 mb-3">
             <Trophy className="w-4 h-4 text-accent" />
             <h4 className="text-sm sm:text-base font-semibold text-foreground">
-              Comparativo de performance entre cupons
+              Comparativo de performance
             </h4>
           </div>
           <div className="overflow-x-auto -mx-2 px-2">
-            <table className="w-full text-sm min-w-[480px]">
+            <table className="w-full text-sm min-w-[420px]">
               <thead>
                 <tr className="text-xs text-muted-foreground border-b border-border">
                   <th className="text-left py-2 font-medium">#</th>
                   <th className="text-left py-2 font-medium">Cupom</th>
-                  <th className="text-right py-2 font-medium">Taxa de resgate</th>
+                  <th className="text-right py-2 font-medium">Taxa resgate</th>
                   <th className="text-left py-2 font-medium pl-4">Melhor dia</th>
-                  <th className="text-left py-2 font-medium">Melhor horário</th>
                 </tr>
               </thead>
               <tbody>
@@ -233,7 +292,6 @@ export default function Dashboard() {
                     </td>
                     <td className="py-3 text-right font-bold text-primary">{c.taxaResgate}%</td>
                     <td className="py-3 pl-4 text-foreground">{c.melhorDia}</td>
-                    <td className="py-3 text-foreground">{c.melhorHorario}</td>
                   </tr>
                 ))}
               </tbody>
@@ -242,24 +300,60 @@ export default function Dashboard() {
         </GlassCard>
 
         <GlassCard delay={900}>
-          <div className="flex items-center gap-2 mb-3">
-            {benchmarking.diferencaPct >= 0 ? (
-              <TrendingUp className="w-4 h-4 text-emerald-600" />
-            ) : (
-              <TrendingDown className="w-4 h-4 text-destructive" />
-            )}
-            <h4 className="text-sm font-semibold text-foreground">Benchmarking de mercado</h4>
+          <div className="flex items-center gap-2 mb-1">
+            <CheckCircle2 className="w-4 h-4 text-primary" />
+            <h4 className="text-sm sm:text-base font-semibold text-foreground">Conversão por cupom</h4>
           </div>
-          <p className="text-3xl font-bold text-foreground">
-            {benchmarking.diferencaPct.toFixed(1)}%
+          <p className="text-xs text-muted-foreground mb-4">
+            Uso único: % de conversão. Recorrente: usos por usuário.
           </p>
-          <p className="text-sm text-emerald-600 font-medium mb-3">acima da média do segmento</p>
-          <p className="text-xs text-muted-foreground">
-            Sua taxa de conversão ({benchmarking.taxaEmpresa}%) está {benchmarking.diferencaPct.toFixed(1)}% acima da média do segmento <strong>{benchmarking.segmento}</strong> ({benchmarking.mediaSegmento}%).
-          </p>
-          <p className="text-[10px] text-muted-foreground mt-3 italic">
-            Dado anônimo agregado do segmento.
-          </p>
+          <div className="space-y-4">
+            {cuponsData.map((c) => {
+              const utilizados = getUtilizados(c.id);
+              const razao = c.resgates > 0 ? utilizados / c.resgates : 0;
+              const isUU = c.tipo === "uso_unico";
+              const conversaoPct = Math.min(100, Math.round(razao * 100));
+              const usosPorUsuario = razao.toLocaleString("pt-BR", {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1,
+              });
+              const barraPct = isUU
+                ? conversaoPct
+                : Math.min(100, Math.round((razao / 3) * 100));
+              return (
+                <div key={c.id}>
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-sm font-medium text-foreground truncate">{c.nome}</span>
+                      <Badge
+                        variant="outline"
+                        className="bg-primary/5 text-primary border-primary/20 gap-1 shrink-0 text-[10px] py-0"
+                      >
+                        {isUU ? <Tag className="w-3 h-3" /> : <Repeat className="w-3 h-3" />}
+                        {tipoLabel[c.tipo]}
+                      </Badge>
+                    </div>
+                    <span className={cn(
+                      "text-sm font-bold shrink-0",
+                      isUU ? "text-primary" : "text-accent"
+                    )}>
+                      {isUU ? `${conversaoPct}%` : `${usosPorUsuario}×`}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1">
+                    <span>{c.resgates} resgatados · {utilizados} utilizados</span>
+                    <span>{isUU ? "conversão" : "por usuário"}</span>
+                  </div>
+                  <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className={cn("h-full", isUU ? "bg-primary" : "bg-accent")}
+                      style={{ width: `${barraPct}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </GlassCard>
       </div>
 
