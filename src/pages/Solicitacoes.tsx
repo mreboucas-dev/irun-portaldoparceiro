@@ -249,30 +249,38 @@ export default function Solicitacoes() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label>Limite de resgate</Label>
-                <RadioGroup value={limiteResgate} onValueChange={(v) => setLimiteResgate(v as LimiteResgate)} className="mt-2 space-y-2">
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <RadioGroupItem value="limitado" id="lim" />
-                    <span>Limitado</span>
-                  </label>
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <RadioGroupItem value="ilimitado" id="ilim" />
-                    <span>Ilimitado (sem teto de resgates)</span>
-                  </label>
-                </RadioGroup>
-              </div>
-              {limiteResgate === "limitado" && (
-                <div>
-                  <Label htmlFor="qtd">Quantidade limite</Label>
-                  <Input id="qtd" type="number" min={1} value={quantidadeLimite} onChange={(e) => setQuantidadeLimite(e.target.value)} placeholder="500" />
-                </div>
-              )}
+            <div>
+              <Label>Limite de resgate</Label>
+              <p className="text-xs text-muted-foreground mt-0.5 mb-2">teto TOTAL da campanha — quantos cupons no total</p>
+              <RadioGroup value={limiteResgate} onValueChange={(v) => setLimiteResgate(v as LimiteResgate)} className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-3">
+                <label className={`flex flex-col gap-2 p-3 rounded-xl border cursor-pointer transition-colors ${limiteResgate === "limitado" ? "border-primary bg-primary/5" : "border-border"}`}>
+                  <div className="flex items-start gap-3">
+                    <RadioGroupItem value="limitado" id="lim" className="mt-0.5" />
+                    <div>
+                      <div className="text-sm font-medium text-foreground">Limitado</div>
+                      <div className="text-xs text-muted-foreground">definir teto total de resgates</div>
+                    </div>
+                  </div>
+                  {limiteResgate === "limitado" && (
+                    <div className="pl-7">
+                      <Label htmlFor="qtd" className="sr-only">Quantidade limite</Label>
+                      <Input id="qtd" type="number" min={1} value={quantidadeLimite} onChange={(e) => setQuantidadeLimite(e.target.value)} placeholder="Ex: 500" />
+                    </div>
+                  )}
+                </label>
+                <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${limiteResgate === "ilimitado" ? "border-primary bg-primary/5" : "border-border"}`}>
+                  <RadioGroupItem value="ilimitado" id="ilim" className="mt-0.5" />
+                  <div>
+                    <div className="text-sm font-medium text-foreground">Ilimitado</div>
+                    <div className="text-xs text-muted-foreground">sem teto de resgates</div>
+                  </div>
+                </label>
+              </RadioGroup>
             </div>
 
             <div>
               <Label>Tipo de cupom</Label>
+              <p className="text-xs text-muted-foreground mt-0.5 mb-2">como CADA usuário usa o cupom</p>
               <RadioGroup value={tipoCupom} onValueChange={(v) => setTipoCupom(v as TipoCupom)} className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-3">
                 <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${tipoCupom === "uso_unico" ? "border-primary bg-primary/5" : "border-border"}`}>
                   <RadioGroupItem value="uso_unico" id="uso_unico" className="mt-0.5" />
