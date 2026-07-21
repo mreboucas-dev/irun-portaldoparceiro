@@ -281,12 +281,28 @@ export const contratosData: Contrato[] = [
 // ---------------------------------------------------------------------------
 // Solicitações de novo cupom
 // ---------------------------------------------------------------------------
+export type TipoDesconto = "percentual" | "valor" | "brinde";
+export type LimiteResgate = "ilimitado" | "limitado";
+
+export interface SolicitacaoDetalhes {
+  tipoDesconto?: TipoDesconto;
+  valorDesconto?: number;
+  descricaoBrinde?: string;
+  limiteResgate?: LimiteResgate;
+  quantidadeLimite?: number;
+  tipoCupom?: TipoCupom;
+  inicio?: string;
+  fim?: string;
+  observacoes?: string;
+}
+
 export interface Solicitacao {
   id: string;
   data: string;
   tipo: "Novo Cupom" | "Renovação";
   nomeCupom: string;
   status: "Enviado" | "Em Análise" | "Aprovado";
+  detalhes?: SolicitacaoDetalhes;
 }
 
 export const solicitacoesIniciais: Solicitacao[] = [
