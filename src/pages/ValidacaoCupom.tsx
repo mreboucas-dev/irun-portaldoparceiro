@@ -61,13 +61,30 @@ export default function ValidacaoCupom() {
     setHistorico((prev) => [log, ...prev].slice(0, 10));
 
     if (r.valido === true) {
-      setResultado({ tipo: "valido", data: r });
+      setResultado({ tipo: "valido", data: r, confirmado: false });
       toast.success("Cupom validado com sucesso");
     } else {
       setResultado({ tipo: "invalido", data: r });
       toast.error("Cupom inválido");
     }
   };
+
+  const handleConfirmarResgate = () => {
+    if (resultado.tipo !== "valido" || resultado.confirmado) return;
+    const cupom = resultado.data.cupom;
+    confirmarResgate(cupom.codigo);
+    setResultado({ ...resultado, confirmado: true });
+    const log: ValidacaoLog = {
+      id: `v${Date.now()}-c`,
+      codigo: cupom.codigo,
+      data: new Date().toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }),
+      resultado: "Aprovado",
+      motivo: "Resgate confirmado",
+    };
+    setHistorico((prev) => [log, ...prev].slice(0, 10));
+    toast.success("Resgate confirmado");
+  };
+
 
   const reset = () => {
     setCodigo("");
