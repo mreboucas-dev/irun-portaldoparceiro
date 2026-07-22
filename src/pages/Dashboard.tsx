@@ -482,17 +482,31 @@ export default function Dashboard() {
         </GlassCard>
 
         <GlassCard delay={900}>
-          <div className="flex items-center gap-2 mb-1">
-            <CheckCircle2 className="w-4 h-4 text-primary" />
-            <h4 className="text-sm sm:text-base font-semibold text-foreground">Conversão por cupom</h4>
+          <div className="flex items-start justify-between gap-3 mb-1 flex-wrap">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-primary" />
+              <h4 className="text-sm sm:text-base font-semibold text-foreground">Conversão por cupom</h4>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] text-muted-foreground">Ordenar por</span>
+              <Select value={orderBy} onValueChange={(v) => setOrderBy(v as typeof orderBy)}>
+                <SelectTrigger className="h-8 text-xs w-[170px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="receita">Receita estimada</SelectItem>
+                  <SelectItem value="utilizados">Cupons utilizados</SelectItem>
+                  <SelectItem value="conversao">Conversão</SelectItem>
+                  <SelectItem value="resgates">Resgatados</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <p className="text-xs text-muted-foreground mb-4">
             Uso único: % de conversão. Recorrente: usos por usuário. Receita est. = ticket médio ({formatBRL(ticketMedio)}) × utilizados.
           </p>
           <div className="space-y-4">
-            {cuponsData.map((c) => {
-              const utilizados = getUtilizados(c.id);
-              const razao = c.resgates > 0 ? utilizados / c.resgates : 0;
+            {cuponsOrdenados.map(({ cupom: c, utilizados, razao, receita: receitaEst }, idx) => {
               const isUU = c.tipo === "uso_unico";
               const conversaoPct = Math.min(100, Math.round(razao * 100));
               const usosPorUsuario = razao.toLocaleString("pt-BR", {
@@ -502,11 +516,17 @@ export default function Dashboard() {
               const barraPct = isUU
                 ? conversaoPct
                 : Math.min(100, Math.round((razao / 3) * 100));
-              const receitaEst = utilizados * ticketMedio;
+              const isBest = idx === 0;
               return (
-                <div key={c.id}>
+                <div
+                  key={c.id}
+                  className={cn(
+                    "rounded-lg transition-colors",
+                    isBest && "bg-accent/5 ring-1 ring-accent/30 p-3 -mx-1"
+                  )}
+                >
                   <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <div className="flex items-center gap-2 min-w-0">
+                    <div className="flex items-center gap-2 min-w-0 flex-wrap">
                       <span className="text-sm font-medium text-foreground truncate">{c.nome}</span>
                       <Badge
                         variant="outline"
@@ -515,6 +535,12 @@ export default function Dashboard() {
                         {isUU ? <Tag className="w-3 h-3" /> : <Repeat className="w-3 h-3" />}
                         {tipoLabel[c.tipo]}
                       </Badge>
+                      {isBest && (
+                        <Badge className="bg-accent text-accent-foreground gap-1 shrink-0 text-[10px] py-0">
+                          <Crown className="w-3 h-3" />
+                          Melhor desempenho
+                        </Badge>
+                      )}
                     </div>
                     <span className={cn(
                       "text-sm font-bold shrink-0",
@@ -538,6 +564,7 @@ export default function Dashboard() {
                   </div>
                 </div>
               );
+
             })}
           </div>
         </GlassCard>
