@@ -45,11 +45,17 @@ import {
   ArrowDown,
   Minus,
   Crown,
+  AlertTriangle,
+  AlertOctagon,
+  Lightbulb,
+  ArrowRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { gerarInsightsParceiro, type InsightItem } from "@/data/insightsParceiro";
 
 type DeltaKind = "pct" | "pp";
 
@@ -228,6 +234,78 @@ const tipoLabel: Record<TipoCupom, string> = {
   recorrente: "Recorrente",
 };
 
+const severidadeStyle: Record<InsightItem["severidade"], { ring: string; bg: string; icon: string; badge: string; label: string }> = {
+  critico: {
+    ring: "ring-destructive/30",
+    bg: "bg-destructive/[0.04]",
+    icon: "bg-destructive/10 text-destructive",
+    badge: "bg-destructive/10 text-destructive border-destructive/30",
+    label: "Crítico",
+  },
+  atencao: {
+    ring: "ring-accent/40",
+    bg: "bg-accent/[0.05]",
+    icon: "bg-accent/15 text-accent",
+    badge: "bg-accent/10 text-accent border-accent/30",
+    label: "Atenção",
+  },
+  info: {
+    ring: "ring-primary/20",
+    bg: "bg-primary/[0.03]",
+    icon: "bg-primary/10 text-primary",
+    badge: "bg-primary/5 text-primary border-primary/20",
+    label: "Insight",
+  },
+};
+
+function InsightCard({ item, delay = 0 }: { item: InsightItem; delay?: number }) {
+  const s = severidadeStyle[item.severidade];
+  const Icon =
+    item.tipo === "alerta"
+      ? item.severidade === "critico"
+        ? AlertOctagon
+        : AlertTriangle
+      : Lightbulb;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: delay / 1000 }}
+      className={cn("glass-card rounded-xl p-4 sm:p-5 ring-1", s.ring, s.bg)}
+    >
+      <div className="flex items-start gap-3">
+        <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center shrink-0", s.icon)}>
+          <Icon className="w-4.5 h-4.5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <Badge variant="outline" className={cn("text-[10px] py-0", s.badge)}>
+              {s.label}
+            </Badge>
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wide">
+              {item.tipo === "alerta" ? "Alerta" : "Insight"}
+            </span>
+          </div>
+          <h4 className="text-sm font-semibold text-foreground leading-snug">{item.titulo}</h4>
+          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{item.descricao}</p>
+          {item.cta && (
+            <div className="mt-3">
+              <Button asChild size="sm" variant="outline" className="h-8 text-xs gap-1.5">
+                <Link to={item.cta.href}>
+                  {item.cta.label}
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+
+
 export default function Dashboard() {
   const { getUtilizados } = useUtilizados();
   const { ticketMedio, setTicketMedio } = useTicketMedio();
@@ -278,6 +356,11 @@ export default function Dashboard() {
     });
     return arr;
   }, [orderBy, ticketMedio, getUtilizados]);
+
+  const insights = useMemo(
+    () => gerarInsightsParceiro({ cupons: cuponsData, getUtilizados, ticketMedio }),
+    [getUtilizados, ticketMedio]
+  );
 
   return (
     <div className="space-y-5 sm:space-y-8">
@@ -331,6 +414,32 @@ export default function Dashboard() {
           delta={<Delta current={conversaoReal} previous={conversaoAnterior} kind="pp" />}
         />
       </div>
+
+      {/* Insights e alertas acionáveis */}
+      {insights.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
+            <div>
+              <h2 className="text-base sm:text-lg font-semibold text-foreground">
+                Insights e alertas
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                O que está acontecendo nos seus cupons agora e o que fazer a respeito.
+              </p>
+            </div>
+            <Badge variant="outline" className="text-[10px] bg-muted/40">
+              {insights.length} {insights.length === 1 ? "item" : "itens"}
+            </Badge>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+            {insights.map((it, i) => (
+              <InsightCard key={it.id} item={it} delay={i * 60} />
+            ))}
+          </div>
+        </section>
+      )}
+
+
 
 
 
