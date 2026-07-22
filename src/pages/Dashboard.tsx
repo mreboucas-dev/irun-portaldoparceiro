@@ -194,8 +194,10 @@ const tipoLabel: Record<TipoCupom, string> = {
 
 export default function Dashboard() {
   const { getUtilizados } = useUtilizados();
+  const { ticketMedio, setTicketMedio } = useTicketMedio();
 
   const totalUtilizados = cuponsData.reduce((acc, c) => acc + getUtilizados(c.id), 0);
+  const faturamentoEstimado = totalUtilizados * ticketMedio;
 
   const usoUnico = cuponsData.filter((c) => c.tipo === "uso_unico");
   const somaResgatesUU = usoUnico.reduce((a, c) => a + c.resgates, 0);
@@ -214,8 +216,8 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {/* KPIs — Cupons utilizados em destaque */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      {/* KPIs — Cupons utilizados + Faturamento estimado em destaque */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
         <KpiCard
           label="Cupons utilizados"
           value={totalUtilizados.toLocaleString("pt-BR")}
@@ -225,18 +227,27 @@ export default function Dashboard() {
           delay={0}
         />
         <KpiCard
+          label="Faturamento estimado"
+          value={formatBRL(faturamentoEstimado)}
+          hint={`estimativa · ticket médio ${formatBRL(ticketMedio)} × cupons utilizados`}
+          Icon={DollarSign}
+          highlight
+          delay={60}
+          action={<TicketMedioEditor value={ticketMedio} onChange={setTicketMedio} />}
+        />
+        <KpiCard
           label={kpisDashboard.resgatesMes.label}
           value={kpisDashboard.resgatesMes.value}
           trend={kpisDashboard.resgatesMes.trend}
           Icon={Gift}
-          delay={80}
+          delay={120}
         />
         <KpiCard
           label={kpisDashboard.cuponsAtivos.label}
           value={kpisDashboard.cuponsAtivos.value}
           trend={kpisDashboard.cuponsAtivos.trend}
           Icon={Ticket}
-          delay={160}
+          delay={180}
         />
         <KpiCard
           label="Taxa de conversão"
@@ -246,6 +257,7 @@ export default function Dashboard() {
           delay={240}
         />
       </div>
+
 
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8">
