@@ -73,10 +73,7 @@ function KpiCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="flex items-center gap-1.5 mb-1">
-            <p className="text-xs sm:text-sm text-muted-foreground font-medium">{label}</p>
-            {action}
-          </div>
+          <p className="text-xs sm:text-sm text-muted-foreground mb-1 font-medium">{label}</p>
           <p className={cn(
             "font-bold text-foreground tracking-tight",
             highlight ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"
@@ -90,13 +87,17 @@ function KpiCard({
             <p className="text-[11px] text-muted-foreground mt-1">{hint}</p>
           )}
         </div>
-        <div className={cn(
-          "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-          highlight ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
-        )}>
-          <Icon className="w-5 h-5" />
+        <div className="flex flex-col items-end gap-1.5 shrink-0">
+          <div className={cn(
+            "w-10 h-10 rounded-lg flex items-center justify-center",
+            highlight ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
+          )}>
+            <Icon className="w-5 h-5" />
+          </div>
+          {action}
         </div>
       </div>
+
     </motion.div>
   );
 }
