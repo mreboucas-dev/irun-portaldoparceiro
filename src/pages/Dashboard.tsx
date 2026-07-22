@@ -12,9 +12,14 @@ import {
   type TipoCupom,
 } from "@/data/mockData";
 import { useUtilizados } from "@/hooks/useUtilizados";
+import { useTicketMedio, formatBRL } from "@/hooks/useTicketMedio";
 import { GlassCard } from "@/components/GlassCard";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, LineChart, Line, CartesianGrid } from "recharts";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Gift,
   Ticket,
@@ -27,10 +32,13 @@ import {
   Users,
   Repeat,
   Tag,
+  DollarSign,
+  Pencil,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 function KpiCard({
   label,
