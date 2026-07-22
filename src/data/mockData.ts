@@ -93,6 +93,8 @@ export interface Cupom {
   fim: string;
   resgates: number;
   utilizados: number;
+  resgatesAnterior: number;
+  utilizadosAnterior: number;
   meta: number;
   taxaResgate: number; // %
   melhorDia: string;
@@ -111,6 +113,8 @@ export const cuponsData: Cupom[] = [
     fim: "2026-09-30",
     resgates: 412,
     utilizados: 291, // ~71% de conversão
+    resgatesAnterior: 358,
+    utilizadosAnterior: 240,
     meta: 600,
     taxaResgate: 22.7,
     melhorDia: "Quarta-feira",
@@ -127,6 +131,8 @@ export const cuponsData: Cupom[] = [
     fim: "2026-03-15",
     resgates: 289,
     utilizados: 187, // ~65% de conversão
+    resgatesAnterior: 305,
+    utilizadosAnterior: 210,
     meta: 400,
     taxaResgate: 14.3,
     melhorDia: "Sábado",
@@ -143,12 +149,15 @@ export const cuponsData: Cupom[] = [
     fim: "2026-10-31",
     resgates: 425,
     utilizados: 892, // ~2,1× por usuário (recompra)
+    resgatesAnterior: 378,
+    utilizadosAnterior: 745,
     meta: 500,
     taxaResgate: 19.8,
     melhorDia: "Quarta-feira",
     melhorHorario: "13h",
   },
 ];
+
 
 // ---------------------------------------------------------------------------
 // Validação de cupom
