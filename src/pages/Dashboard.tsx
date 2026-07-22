@@ -413,7 +413,7 @@ export default function Dashboard() {
             <h4 className="text-sm sm:text-base font-semibold text-foreground">Conversão por cupom</h4>
           </div>
           <p className="text-xs text-muted-foreground mb-4">
-            Uso único: % de conversão. Recorrente: usos por usuário.
+            Uso único: % de conversão. Recorrente: usos por usuário. Receita est. = ticket médio ({formatBRL(ticketMedio)}) × utilizados.
           </p>
           <div className="space-y-4">
             {cuponsData.map((c) => {
@@ -428,6 +428,7 @@ export default function Dashboard() {
               const barraPct = isUU
                 ? conversaoPct
                 : Math.min(100, Math.round((razao / 3) * 100));
+              const receitaEst = utilizados * ticketMedio;
               return (
                 <div key={c.id}>
                   <div className="flex items-center justify-between gap-2 mb-1.5">
@@ -448,10 +449,13 @@ export default function Dashboard() {
                       {isUU ? `${conversaoPct}%` : `${usosPorUsuario}×`}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1">
-                    <span>{c.resgates} resgatados · {utilizados} utilizados</span>
-                    <span>{isUU ? "conversão" : "por usuário"}</span>
+                  <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1 gap-2">
+                    <span className="truncate">{c.resgates} resgatados · {utilizados} utilizados</span>
+                    <span className="shrink-0">
+                      Receita est. <span className="font-semibold text-foreground">{formatBRL(receitaEst)}</span>
+                    </span>
                   </div>
+
                   <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                     <div
                       className={cn("h-full", isUU ? "bg-primary" : "bg-accent")}
