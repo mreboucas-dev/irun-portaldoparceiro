@@ -234,6 +234,78 @@ const tipoLabel: Record<TipoCupom, string> = {
   recorrente: "Recorrente",
 };
 
+const severidadeStyle: Record<InsightItem["severidade"], { ring: string; bg: string; icon: string; badge: string; label: string }> = {
+  critico: {
+    ring: "ring-destructive/30",
+    bg: "bg-destructive/[0.04]",
+    icon: "bg-destructive/10 text-destructive",
+    badge: "bg-destructive/10 text-destructive border-destructive/30",
+    label: "Crítico",
+  },
+  atencao: {
+    ring: "ring-accent/40",
+    bg: "bg-accent/[0.05]",
+    icon: "bg-accent/15 text-accent",
+    badge: "bg-accent/10 text-accent border-accent/30",
+    label: "Atenção",
+  },
+  info: {
+    ring: "ring-primary/20",
+    bg: "bg-primary/[0.03]",
+    icon: "bg-primary/10 text-primary",
+    badge: "bg-primary/5 text-primary border-primary/20",
+    label: "Insight",
+  },
+};
+
+function InsightCard({ item, delay = 0 }: { item: InsightItem; delay?: number }) {
+  const s = severidadeStyle[item.severidade];
+  const Icon =
+    item.tipo === "alerta"
+      ? item.severidade === "critico"
+        ? AlertOctagon
+        : AlertTriangle
+      : Lightbulb;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: delay / 1000 }}
+      className={cn("glass-card rounded-xl p-4 sm:p-5 ring-1", s.ring, s.bg)}
+    >
+      <div className="flex items-start gap-3">
+        <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center shrink-0", s.icon)}>
+          <Icon className="w-4.5 h-4.5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <Badge variant="outline" className={cn("text-[10px] py-0", s.badge)}>
+              {s.label}
+            </Badge>
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wide">
+              {item.tipo === "alerta" ? "Alerta" : "Insight"}
+            </span>
+          </div>
+          <h4 className="text-sm font-semibold text-foreground leading-snug">{item.titulo}</h4>
+          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{item.descricao}</p>
+          {item.cta && (
+            <div className="mt-3">
+              <Button asChild size="sm" variant="outline" className="h-8 text-xs gap-1.5">
+                <Link to={item.cta.href}>
+                  {item.cta.label}
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+
+
 export default function Dashboard() {
   const { getUtilizados } = useUtilizados();
   const { ticketMedio, setTicketMedio } = useTicketMedio();
