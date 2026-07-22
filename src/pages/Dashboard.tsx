@@ -54,8 +54,24 @@ function KpiCard({
   trend?: string;
   hint?: string;
   Icon: React.ElementType;
+function KpiCard({
+  label,
+  value,
+  trend,
+  hint,
+  Icon,
+  delay = 0,
+  highlight = false,
+  action,
+}: {
+  label: string;
+  value: string | number;
+  trend?: string;
+  hint?: string;
+  Icon: React.ElementType;
   delay?: number;
   highlight?: boolean;
+  action?: React.ReactNode;
 }) {
   const isPositive = !trend || !trend.startsWith("-");
   return (
@@ -71,7 +87,10 @@ function KpiCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs sm:text-sm text-muted-foreground mb-1 font-medium">{label}</p>
+          <div className="flex items-center gap-1.5 mb-1">
+            <p className="text-xs sm:text-sm text-muted-foreground font-medium">{label}</p>
+            {action}
+          </div>
           <p className={cn(
             "font-bold text-foreground tracking-tight",
             highlight ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"
@@ -93,6 +112,89 @@ function KpiCard({
         </div>
       </div>
     </motion.div>
+  );
+}
+
+function TicketMedioEditor({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [local, setLocal] = useState(String(value));
+
+  return (
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (o) setLocal(String(value));
+      }}
+    >
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          aria-label="Editar ticket médio"
+          className="w-5 h-5 rounded-md inline-flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+        >
+          <Pencil className="w-3 h-3" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-72">
+        <div className="space-y-3">
+          <div>
+            <Label htmlFor="ticket-medio" className="text-sm font-semibold">
+              Ticket médio (R$)
+            </Label>
+            <p className="text-[11px] text-muted-foreground mt-1">
+              Premissa informada por você. Usada para estimar faturamento —
+              não é dado real de venda.
+            </p>
+          </div>
+          <Input
+            id="ticket-medio"
+            type="number"
+            min={0}
+            inputMode="decimal"
+            value={local}
+            onChange={(e) => setLocal(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                const n = parseFloat(local);
+                if (Number.isFinite(n) && n >= 0) {
+                  onChange(n);
+                  setOpen(false);
+                }
+              }
+            }}
+          />
+          <div className="flex justify-end gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              size="sm"
+              className="bg-primary text-primary-foreground"
+              onClick={() => {
+                const n = parseFloat(local);
+                if (Number.isFinite(n) && n >= 0) {
+                  onChange(n);
+                  setOpen(false);
+                }
+              }}
+            >
+              Salvar
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
 
