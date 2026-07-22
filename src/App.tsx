@@ -11,6 +11,7 @@ import Contratos from "./pages/Contratos";
 import Relatorios from "./pages/Relatorios";
 import ValidacaoCupom from "./pages/ValidacaoCupom";
 import Solicitacoes from "./pages/Solicitacoes";
+import Planejamento from "./pages/Planejamento";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/relatorios" element={<AppLayout><Relatorios /></AppLayout>} />
           <Route path="/contratos" element={<AppLayout><Contratos /></AppLayout>} />
           <Route path="/solicitacoes" element={<AppLayout><Solicitacoes /></AppLayout>} />
+          <Route path="/planejamento" element={<AppLayout><Planejamento /></AppLayout>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

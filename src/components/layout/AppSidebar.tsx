@@ -6,6 +6,7 @@ import {
   FileBarChart,
   ScanLine,
   Send,
+  CalendarRange,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -25,6 +26,7 @@ const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Validação de Cupom", url: "/validacao", icon: ScanLine },
   { title: "Meus Cupons", url: "/cupons", icon: Ticket },
+  { title: "Planejamento", url: "/planejamento", icon: CalendarRange },
   { title: "Relatórios", url: "/relatorios", icon: FileBarChart },
   { title: "Contratos", url: "/contratos", icon: FileText },
   { title: "Solicitações", url: "/solicitacoes", icon: Send },
