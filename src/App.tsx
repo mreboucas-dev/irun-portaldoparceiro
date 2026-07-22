@@ -11,6 +11,7 @@ import Contratos from "./pages/Contratos";
 import Relatorios from "./pages/Relatorios";
 import ValidacaoCupom from "./pages/ValidacaoCupom";
 import Solicitacoes from "./pages/Solicitacoes";
+import Planejamento from "./pages/Planejamento";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
