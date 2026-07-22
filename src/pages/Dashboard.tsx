@@ -343,6 +343,32 @@ export default function Dashboard() {
         />
       </div>
 
+      {/* Insights e alertas acionáveis */}
+      {insights.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
+            <div>
+              <h2 className="text-base sm:text-lg font-semibold text-foreground">
+                Insights e alertas
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                O que está acontecendo nos seus cupons agora e o que fazer a respeito.
+              </p>
+            </div>
+            <Badge variant="outline" className="text-[10px] bg-muted/40">
+              {insights.length} {insights.length === 1 ? "item" : "itens"}
+            </Badge>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+            {insights.map((it, i) => (
+              <InsightCard key={it.id} item={it} delay={i * 60} />
+            ))}
+          </div>
+        </section>
+      )}
+
+
+
 
 
       {/* Gráficos */}
