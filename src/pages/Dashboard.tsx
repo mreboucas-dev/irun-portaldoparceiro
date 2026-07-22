@@ -285,6 +285,11 @@ export default function Dashboard() {
     return arr;
   }, [orderBy, ticketMedio, getUtilizados]);
 
+  const insights = useMemo(
+    () => gerarInsightsParceiro({ cupons: cuponsData, getUtilizados, ticketMedio }),
+    [getUtilizados, ticketMedio]
+  );
+
   return (
     <div className="space-y-5 sm:space-y-8">
       <div>
