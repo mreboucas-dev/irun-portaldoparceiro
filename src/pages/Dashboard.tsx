@@ -21,6 +21,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Gift,
   Ticket,
   Percent,
@@ -34,32 +41,61 @@ import {
   Tag,
   DollarSign,
   Pencil,
+  ArrowUp,
+  ArrowDown,
+  Minus,
+  Crown,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+
+type DeltaKind = "pct" | "pp";
+
+function Delta({ current, previous, kind = "pct" }: { current: number | null; previous: number | null; kind?: DeltaKind }) {
+  if (current === null || previous === null || !Number.isFinite(current) || !Number.isFinite(previous)) return null;
+  let diff: number;
+  let label: string;
+  if (kind === "pp") {
+    diff = current - previous;
+    label = `${diff >= 0 ? "+" : ""}${diff.toFixed(1).replace(".", ",")} p.p. vs mês anterior`;
+  } else {
+    if (previous === 0) return null;
+    diff = ((current - previous) / previous) * 100;
+    label = `${Math.abs(diff).toFixed(0)}% vs mês anterior`;
+  }
+  const isUp = diff > 0.05;
+  const isDown = diff < -0.05;
+  const Icon = isUp ? ArrowUp : isDown ? ArrowDown : Minus;
+  const color = isUp ? "text-emerald-600" : isDown ? "text-destructive" : "text-muted-foreground";
+  return (
+    <span className={cn("inline-flex items-center gap-1 text-xs sm:text-sm font-medium mt-1", color)}>
+      <Icon className="w-3 h-3" />
+      {label}
+    </span>
+  );
+}
 
 function KpiCard({
   label,
   value,
-  trend,
   hint,
   Icon,
   delay = 0,
   highlight = false,
   action,
+  delta,
 }: {
   label: string;
   value: string | number;
-  trend?: string;
   hint?: string;
   Icon: React.ElementType;
   delay?: number;
   highlight?: boolean;
   action?: React.ReactNode;
+  delta?: React.ReactNode;
 }) {
-  const isPositive = !trend || !trend.startsWith("-");
   return (
     <motion.div
       initial={{ opacity: 0, y: 16, scale: 0.98 }}
@@ -67,40 +103,38 @@ function KpiCard({
       transition={{ duration: 0.45, delay: delay / 1000 }}
       whileHover={{ y: -3 }}
       className={cn(
-        "glass-card rounded-xl p-5 sm:p-7",
+        "glass-card rounded-xl p-4 sm:p-6",
         highlight && "ring-1 ring-primary/30 bg-primary/[0.03]"
       )}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
           <p className="text-xs sm:text-sm text-muted-foreground mb-1 font-medium">{label}</p>
           <p className={cn(
-            "font-bold text-foreground tracking-tight",
-            highlight ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"
+            "font-bold text-foreground tracking-tight break-words",
+            highlight
+              ? "text-xl sm:text-2xl xl:text-3xl"
+              : "text-xl sm:text-2xl"
           )}>{value}</p>
-          {trend && (
-            <span className={cn("text-xs sm:text-sm font-medium mt-1 inline-block", isPositive ? "text-emerald-600" : "text-destructive")}>
-              {trend} vs mês anterior
-            </span>
-          )}
+          {delta}
           {hint && (
-            <p className="text-[11px] text-muted-foreground mt-1">{hint}</p>
+            <p className="text-[11px] text-muted-foreground mt-1 leading-snug">{hint}</p>
           )}
         </div>
         <div className="flex flex-col items-end gap-1.5 shrink-0">
           <div className={cn(
-            "w-10 h-10 rounded-lg flex items-center justify-center",
+            "w-9 h-9 rounded-lg flex items-center justify-center",
             highlight ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
           )}>
-            <Icon className="w-5 h-5" />
+            <Icon className="w-4.5 h-4.5" />
           </div>
           {action}
         </div>
       </div>
-
     </motion.div>
   );
 }
+
 
 function TicketMedioEditor({
   value,
