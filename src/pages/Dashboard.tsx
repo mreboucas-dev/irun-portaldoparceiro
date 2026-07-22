@@ -12,9 +12,14 @@ import {
   type TipoCupom,
 } from "@/data/mockData";
 import { useUtilizados } from "@/hooks/useUtilizados";
+import { useTicketMedio, formatBRL } from "@/hooks/useTicketMedio";
 import { GlassCard } from "@/components/GlassCard";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, LineChart, Line, CartesianGrid } from "recharts";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Gift,
   Ticket,
@@ -27,10 +32,13 @@ import {
   Users,
   Repeat,
   Tag,
+  DollarSign,
+  Pencil,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 function KpiCard({
   label,
@@ -40,6 +48,7 @@ function KpiCard({
   Icon,
   delay = 0,
   highlight = false,
+  action,
 }: {
   label: string;
   value: string | number;
@@ -48,6 +57,7 @@ function KpiCard({
   Icon: React.ElementType;
   delay?: number;
   highlight?: boolean;
+  action?: React.ReactNode;
 }) {
   const isPositive = !trend || !trend.startsWith("-");
   return (
@@ -77,14 +87,101 @@ function KpiCard({
             <p className="text-[11px] text-muted-foreground mt-1">{hint}</p>
           )}
         </div>
-        <div className={cn(
-          "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-          highlight ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
-        )}>
-          <Icon className="w-5 h-5" />
+        <div className="flex flex-col items-end gap-1.5 shrink-0">
+          <div className={cn(
+            "w-10 h-10 rounded-lg flex items-center justify-center",
+            highlight ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
+          )}>
+            <Icon className="w-5 h-5" />
+          </div>
+          {action}
         </div>
       </div>
+
     </motion.div>
+  );
+}
+
+function TicketMedioEditor({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [local, setLocal] = useState(String(value));
+
+  return (
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (o) setLocal(String(value));
+      }}
+    >
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          aria-label="Editar ticket médio"
+          className="w-5 h-5 rounded-md inline-flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+        >
+          <Pencil className="w-3 h-3" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-72">
+        <div className="space-y-3">
+          <div>
+            <Label htmlFor="ticket-medio" className="text-sm font-semibold">
+              Ticket médio (R$)
+            </Label>
+            <p className="text-[11px] text-muted-foreground mt-1">
+              Premissa informada por você. Usada para estimar faturamento —
+              não é dado real de venda.
+            </p>
+          </div>
+          <Input
+            id="ticket-medio"
+            type="number"
+            min={0}
+            inputMode="decimal"
+            value={local}
+            onChange={(e) => setLocal(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                const n = parseFloat(local);
+                if (Number.isFinite(n) && n >= 0) {
+                  onChange(n);
+                  setOpen(false);
+                }
+              }
+            }}
+          />
+          <div className="flex justify-end gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              size="sm"
+              className="bg-primary text-primary-foreground"
+              onClick={() => {
+                const n = parseFloat(local);
+                if (Number.isFinite(n) && n >= 0) {
+                  onChange(n);
+                  setOpen(false);
+                }
+              }}
+            >
+              Salvar
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
 
@@ -98,8 +195,10 @@ const tipoLabel: Record<TipoCupom, string> = {
 
 export default function Dashboard() {
   const { getUtilizados } = useUtilizados();
+  const { ticketMedio, setTicketMedio } = useTicketMedio();
 
   const totalUtilizados = cuponsData.reduce((acc, c) => acc + getUtilizados(c.id), 0);
+  const faturamentoEstimado = totalUtilizados * ticketMedio;
 
   const usoUnico = cuponsData.filter((c) => c.tipo === "uso_unico");
   const somaResgatesUU = usoUnico.reduce((a, c) => a + c.resgates, 0);
@@ -118,8 +217,8 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {/* KPIs — Cupons utilizados em destaque */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      {/* KPIs — Cupons utilizados + Faturamento estimado em destaque */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
         <KpiCard
           label="Cupons utilizados"
           value={totalUtilizados.toLocaleString("pt-BR")}
@@ -129,18 +228,27 @@ export default function Dashboard() {
           delay={0}
         />
         <KpiCard
+          label="Faturamento estimado"
+          value={formatBRL(faturamentoEstimado)}
+          hint={`estimativa · ticket médio ${formatBRL(ticketMedio)} × cupons utilizados`}
+          Icon={DollarSign}
+          highlight
+          delay={60}
+          action={<TicketMedioEditor value={ticketMedio} onChange={setTicketMedio} />}
+        />
+        <KpiCard
           label={kpisDashboard.resgatesMes.label}
           value={kpisDashboard.resgatesMes.value}
           trend={kpisDashboard.resgatesMes.trend}
           Icon={Gift}
-          delay={80}
+          delay={120}
         />
         <KpiCard
           label={kpisDashboard.cuponsAtivos.label}
           value={kpisDashboard.cuponsAtivos.value}
           trend={kpisDashboard.cuponsAtivos.trend}
           Icon={Ticket}
-          delay={160}
+          delay={180}
         />
         <KpiCard
           label="Taxa de conversão"
@@ -150,6 +258,7 @@ export default function Dashboard() {
           delay={240}
         />
       </div>
+
 
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8">
@@ -305,7 +414,7 @@ export default function Dashboard() {
             <h4 className="text-sm sm:text-base font-semibold text-foreground">Conversão por cupom</h4>
           </div>
           <p className="text-xs text-muted-foreground mb-4">
-            Uso único: % de conversão. Recorrente: usos por usuário.
+            Uso único: % de conversão. Recorrente: usos por usuário. Receita est. = ticket médio ({formatBRL(ticketMedio)}) × utilizados.
           </p>
           <div className="space-y-4">
             {cuponsData.map((c) => {
@@ -320,6 +429,7 @@ export default function Dashboard() {
               const barraPct = isUU
                 ? conversaoPct
                 : Math.min(100, Math.round((razao / 3) * 100));
+              const receitaEst = utilizados * ticketMedio;
               return (
                 <div key={c.id}>
                   <div className="flex items-center justify-between gap-2 mb-1.5">
@@ -340,10 +450,13 @@ export default function Dashboard() {
                       {isUU ? `${conversaoPct}%` : `${usosPorUsuario}×`}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1">
-                    <span>{c.resgates} resgatados · {utilizados} utilizados</span>
-                    <span>{isUU ? "conversão" : "por usuário"}</span>
+                  <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1 gap-2">
+                    <span className="truncate">{c.resgates} resgatados · {utilizados} utilizados</span>
+                    <span className="shrink-0">
+                      Receita est. <span className="font-semibold text-foreground">{formatBRL(receitaEst)}</span>
+                    </span>
                   </div>
+
                   <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                     <div
                       className={cn("h-full", isUU ? "bg-primary" : "bg-accent")}
