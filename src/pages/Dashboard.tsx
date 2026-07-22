@@ -48,20 +48,6 @@ function KpiCard({
   Icon,
   delay = 0,
   highlight = false,
-}: {
-  label: string;
-  value: string | number;
-  trend?: string;
-  hint?: string;
-  Icon: React.ElementType;
-function KpiCard({
-  label,
-  value,
-  trend,
-  hint,
-  Icon,
-  delay = 0,
-  highlight = false,
   action,
 }: {
   label: string;
