@@ -45,11 +45,17 @@ import {
   ArrowDown,
   Minus,
   Crown,
+  AlertTriangle,
+  AlertOctagon,
+  Lightbulb,
+  ArrowRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { gerarInsightsParceiro, type InsightItem } from "@/data/insightsParceiro";
 
 type DeltaKind = "pct" | "pp";
 
