@@ -113,9 +113,10 @@ function KpiCard({
           <p className={cn(
             "font-bold text-foreground tracking-tight break-words",
             highlight
-              ? "text-xl sm:text-2xl xl:text-3xl"
+              ? "text-lg sm:text-xl lg:text-2xl"
               : "text-xl sm:text-2xl"
           )}>{value}</p>
+
           {delta}
           {hint && (
             <p className="text-[11px] text-muted-foreground mt-1 leading-snug">{hint}</p>
