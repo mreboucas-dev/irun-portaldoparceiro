@@ -15,8 +15,6 @@ import { cuponsData, empresaParceira } from "@/data/mockData";
 import { useUtilizados } from "@/hooks/useUtilizados";
 import { useTicketMedio, formatBRL } from "@/hooks/useTicketMedio";
 import { FileBarChart, Download, FileText, CalendarClock, Info } from "lucide-react";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 
 interface RelatorioRow {
   codigo: string;
