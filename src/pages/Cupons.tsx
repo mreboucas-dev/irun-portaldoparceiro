@@ -105,13 +105,36 @@ export default function Cupons() {
     <div className="space-y-5 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Meus Cupons</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">Meus Cupons</h1>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="Entenda resgatados vs utilizados"
+                  className="w-6 h-6 rounded-md inline-flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-80 text-xs leading-relaxed">
+                <p className="font-semibold text-foreground mb-1">Resgatados × Utilizados</p>
+                <p className="text-muted-foreground">
+                  <span className="font-medium text-foreground">Resgatados</span> são cupons que o cliente pegou no app iRun.{" "}
+                  <span className="font-medium text-foreground">Utilizados</span> são os que foram efetivamente usados na sua
+                  plataforma (você informa aqui). A <span className="font-medium text-foreground">conversão</span> só faz
+                  sentido em cupons de <span className="font-medium">uso único</span>; em recorrentes, medimos usos por usuário.
+                </p>
+              </PopoverContent>
+            </Popover>
+          </div>
           <p className="text-sm text-muted-foreground">Gerencie todos os cupons da sua empresa</p>
         </div>
         <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
           <Link to="/solicitacoes"><Send className="w-4 h-4 mr-2" />Solicitar novo cupom</Link>
         </Button>
       </div>
+
 
       {/* Filtros */}
       <div className="flex flex-wrap gap-2">
