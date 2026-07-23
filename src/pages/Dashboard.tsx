@@ -546,15 +546,30 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-5 sm:space-y-8">
-      <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          {empresaParceira.nome} · Visão geral de desempenho dos seus cupons
-        </p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">
+            {empresaParceira.nome} · Visão geral de desempenho dos seus cupons
+          </p>
+        </div>
+        <HelpPopover ariaLabel="Entenda as métricas do funil">
+          <p className="font-semibold text-foreground mb-1">Entenda as métricas</p>
+          <p className="text-muted-foreground">
+            <span className="font-medium text-foreground">Resgatados</span> = cupons que o cliente pegou no app iRun.{" "}
+            <span className="font-medium text-foreground">Utilizados</span> = cupons efetivamente usados na sua plataforma (você
+            informa em Meus Cupons). A <span className="font-medium text-foreground">conversão</span> só é calculada em cupons de{" "}
+            <span className="font-medium">uso único</span>; nos <span className="font-medium">recorrentes</span> medimos usos por
+            usuário (recompra).
+          </p>
+        </HelpPopover>
       </div>
+
+      <UpdateReminder />
 
       {/* KPIs — Cupons utilizados + Faturamento estimado em destaque */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-4 sm:gap-5">
+
         <KpiCard
           label="Cupons utilizados"
           value={totalUtilizados.toLocaleString("pt-BR")}
