@@ -325,6 +325,167 @@ function InsightCard({ item, delay = 0 }: { item: InsightItem; delay?: number })
   );
 }
 
+function UpdateReminder() {
+  const lastUpdate = useUtilizadosLastUpdate();
+  const dias = lastUpdate
+    ? Math.floor((Date.now() - lastUpdate.getTime()) / (1000 * 60 * 60 * 24))
+    : null;
+  const precisa = lastUpdate === null || (dias !== null && dias >= 7);
+  if (!precisa) return null;
+  const msg =
+    lastUpdate === null
+      ? "Você ainda não atualizou os cupons utilizados."
+      : `Última atualização há ${dias} dias.`;
+  return (
+    <div className="glass-card rounded-xl px-4 py-3 ring-1 ring-accent/30 bg-accent/[0.05] flex items-start sm:items-center gap-3 flex-col sm:flex-row">
+      <div className="w-8 h-8 rounded-lg bg-accent/15 text-accent flex items-center justify-center shrink-0">
+        <Info className="w-4 h-4" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-foreground">
+          Atualize os cupons utilizados para manter os números precisos
+        </p>
+        <p className="text-xs text-muted-foreground">{msg}</p>
+      </div>
+      <Button asChild size="sm" variant="outline" className="h-8 text-xs shrink-0 self-end sm:self-auto">
+        <Link to="/cupons">
+          Atualizar agora <ArrowRight className="w-3.5 h-3.5 ml-1" />
+        </Link>
+      </Button>
+    </div>
+  );
+}
+
+function PerfilPublicoSection() {
+  const [escopo, setEscopo] = useState<string>("todos");
+  const cupomSel = cuponsData.find((c) => String(c.id) === escopo);
+  const publico: PublicoAgregado = useMemo(
+    () => (cupomSel ? publicoDoCupom(cupomSel) : publicoTodos()),
+    [cupomSel]
+  );
+  const faixaTop = [...publico.faixaEtaria].sort((a, b) => b.percentual - a.percentual)[0];
+  const cidadeTop = publico.topCidades[0];
+  const escopoLabel = cupomSel ? `do cupom "${cupomSel.nome}"` : "geral (todos os cupons)";
+
+  return (
+    <div>
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-3">
+        <div>
+          <h2 className="text-base sm:text-lg font-semibold text-foreground">
+            Perfil anonimizado do resgatador
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Dados agregados e anônimos, conforme LGPD. Sem identificação individual.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] text-muted-foreground whitespace-nowrap">Ver público de</span>
+          <Select value={escopo} onValueChange={setEscopo}>
+            <SelectTrigger className="h-8 text-xs w-[210px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos os cupons</SelectItem>
+              {cuponsData.map((c) => (
+                <SelectItem key={c.id} value={String(c.id)}>{c.nome}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {publico.amostraPequena && (
+        <div className="mb-3 text-[11px] text-muted-foreground bg-muted/40 rounded-md px-3 py-2">
+          Amostra pequena ({publico.amostra} resgates) — dados agregados, use com cautela.
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+        <GlassCard delay={500}>
+          <div className="flex items-center gap-2 mb-3">
+            <Users className="w-4 h-4 text-primary" />
+            <h4 className="text-sm font-semibold text-foreground">Faixa etária</h4>
+          </div>
+          <div className="space-y-2">
+            {publico.faixaEtaria.map((f) => (
+              <div key={f.faixa}>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-foreground">{f.faixa}</span>
+                  <span className="text-muted-foreground">{f.percentual}%</span>
+                </div>
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="h-full bg-primary" style={{ width: `${f.percentual}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard delay={600}>
+          <div className="flex items-center gap-2 mb-3">
+            <MapPin className="w-4 h-4 text-primary" />
+            <h4 className="text-sm font-semibold text-foreground">Top cidades</h4>
+          </div>
+          <ol className="space-y-3">
+            {publico.topCidades.map((c, i) => (
+              <li key={c.cidade} className="flex items-center gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
+                  {i + 1}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-foreground truncate">{c.cidade}</p>
+                  <p className="text-xs text-muted-foreground">{c.percentual}% dos resgates</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </GlassCard>
+
+        <GlassCard delay={700}>
+          <div className="flex items-center gap-2 mb-3">
+            <Activity className="w-4 h-4 text-primary" />
+            <h4 className="text-sm font-semibold text-foreground">Nível de atividade predominante</h4>
+          </div>
+          <p className="text-xs text-muted-foreground mb-3">
+            Agregado anônimo do grupo:
+          </p>
+          <div className="px-3 py-2 rounded-lg text-sm bg-primary/10 border border-primary/30 text-primary font-semibold flex items-center justify-between">
+            <span>{publico.atividadePredominante}</span>
+            <Badge variant="outline" className="bg-accent/10 text-accent border-accent/30 text-[10px]">
+              predominante
+            </Badge>
+          </div>
+        </GlassCard>
+      </div>
+
+      {/* Ponte público → ação */}
+      <GlassCard className="mt-4" delay={800}>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-lg bg-accent/15 text-accent flex items-center justify-center shrink-0">
+              <Lightbulb className="w-4.5 h-4.5" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-foreground">Como usar esse público</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Público {escopoLabel}: majoritariamente <span className="font-medium text-foreground">{faixaTop.faixa}</span>{" "}
+                em <span className="font-medium text-foreground">{cidadeTop.cidade}</span>, praticando{" "}
+                <span className="font-medium text-foreground">{publico.atividadePredominante}</span> —
+                considere ofertas alinhadas a esse perfil.
+              </p>
+            </div>
+          </div>
+          <Button asChild size="sm" className="bg-primary text-primary-foreground shrink-0">
+            <Link to="/solicitacoes">
+              <Send className="w-3.5 h-3.5 mr-1.5" /> Criar oferta
+            </Link>
+          </Button>
+        </div>
+      </GlassCard>
+    </div>
+  );
+}
+
 
 
 export default function Dashboard() {
