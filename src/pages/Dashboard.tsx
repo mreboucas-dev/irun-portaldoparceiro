@@ -2,16 +2,14 @@ import {
   kpisDashboard,
   resgatesPorDia,
   resgatesPorHora,
-  perfilFaixaEtaria,
-  perfilTopCidades,
-  perfilAtividadePredominante,
   comparativoCupons,
   avaliacaoEstabelecimento,
   empresaParceira,
   cuponsData,
   type TipoCupom,
 } from "@/data/mockData";
-import { useUtilizados } from "@/hooks/useUtilizados";
+import { publicoDoCupom, publicoTodos, type PublicoAgregado } from "@/data/publicoPorCupom";
+import { useUtilizados, useUtilizadosLastUpdate } from "@/hooks/useUtilizados";
 import { useTicketMedio, formatBRL } from "@/hooks/useTicketMedio";
 import { GlassCard } from "@/components/GlassCard";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -49,6 +47,9 @@ import {
   AlertOctagon,
   Lightbulb,
   ArrowRight,
+  HelpCircle,
+  Send,
+  Info,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +57,26 @@ import { cn } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { gerarInsightsParceiro, type InsightItem } from "@/data/insightsParceiro";
+
+function HelpPopover({ children, ariaLabel }: { children: React.ReactNode; ariaLabel: string }) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          aria-label={ariaLabel}
+          className="w-6 h-6 rounded-md inline-flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+        >
+          <HelpCircle className="w-4 h-4" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-80 text-xs leading-relaxed">
+        {children}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 
 type DeltaKind = "pct" | "pp";
 
