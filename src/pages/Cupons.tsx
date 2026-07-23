@@ -3,11 +3,13 @@ import { GlassCard } from "@/components/GlassCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cuponsData, type StatusCupom, type TipoCupom } from "@/data/mockData";
 import { useUtilizados } from "@/hooks/useUtilizados";
-import { ChevronLeft, ChevronRight, Ticket, Send, Repeat, Tag } from "lucide-react";
+import { ChevronLeft, ChevronRight, Ticket, Send, Repeat, Tag, HelpCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+
 
 const statusColors: Record<StatusCupom, string> = {
   Ativo: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
