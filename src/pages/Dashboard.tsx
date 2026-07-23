@@ -497,84 +497,9 @@ export default function Dashboard() {
         </GlassCard>
       </div>
 
-      {/* Perfil Anonimizado */}
-      <div>
-        <h2 className="text-base sm:text-lg font-semibold text-foreground mb-3">
-          Perfil anonimizado do resgatador
-        </h2>
-        <p className="text-xs text-muted-foreground mb-4">
-          Dados agregados e anônimos, conforme LGPD.
-        </p>
+      {/* Perfil Anonimizado — SEGMENTÁVEL POR CUPOM (LGPD: só agregados) */}
+      <PerfilPublicoSection />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-          <GlassCard delay={500}>
-            <div className="flex items-center gap-2 mb-3">
-              <Users className="w-4 h-4 text-primary" />
-              <h4 className="text-sm font-semibold text-foreground">Faixa etária</h4>
-            </div>
-            <div className="space-y-2">
-              {perfilFaixaEtaria.map((f) => (
-                <div key={f.faixa}>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-foreground">{f.faixa}</span>
-                    <span className="text-muted-foreground">{f.percentual}%</span>
-                  </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div className="h-full bg-primary" style={{ width: `${f.percentual}%` }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </GlassCard>
-
-          <GlassCard delay={600}>
-            <div className="flex items-center gap-2 mb-3">
-              <MapPin className="w-4 h-4 text-primary" />
-              <h4 className="text-sm font-semibold text-foreground">Top 3 cidades</h4>
-            </div>
-            <ol className="space-y-3">
-              {perfilTopCidades.map((c, i) => (
-                <li key={c.cidade} className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
-                    {i + 1}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-foreground truncate">{c.cidade}</p>
-                    <p className="text-xs text-muted-foreground">{c.percentual}% dos resgates</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </GlassCard>
-
-          <GlassCard delay={700}>
-            <div className="flex items-center gap-2 mb-3">
-              <Activity className="w-4 h-4 text-primary" />
-              <h4 className="text-sm font-semibold text-foreground">Nível de atividade predominante</h4>
-            </div>
-            <p className="text-xs text-muted-foreground mb-3">
-              Escala iRun (agregado anônimo do grupo):
-            </p>
-            <div className="space-y-1.5">
-              {perfilAtividadePredominante.escala.map((nivel) => {
-                const ativo = nivel === perfilAtividadePredominante.predominante;
-                return (
-                  <div
-                    key={nivel}
-                    className={cn(
-                      "px-3 py-2 rounded-lg text-xs flex items-center justify-between",
-                      ativo ? "bg-primary/10 border border-primary/30 text-primary font-semibold" : "bg-muted/50 text-muted-foreground"
-                    )}
-                  >
-                    <span>{nivel}</span>
-                    {ativo && <Badge variant="outline" className="bg-accent/10 text-accent border-accent/30 text-[10px]">predominante</Badge>}
-                  </div>
-                );
-              })}
-            </div>
-          </GlassCard>
-        </div>
-      </div>
 
       {/* Comparativo + Conversão por cupom */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
