@@ -147,66 +147,81 @@ export default function Relatorios() {
     toast.success("CSV exportado");
   };
 
-  const exportPDF = () => {
-    if (!resultado) return;
-    const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
-    const pageWidth = doc.internal.pageSize.getWidth();
+  const [pdfLoading, setPdfLoading] = useState(false);
 
-    // Cabeçalho
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text("Relatório de Cupons", 40, 48);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.setTextColor(90);
-    doc.text(`${empresaParceira.nome} — CNPJ ${empresaParceira.cnpj}`, 40, 66);
-    doc.text(`Período: ${periodoLabel}`, 40, 80);
-    doc.text(
-      `Ticket médio (premissa): ${formatBRL(ticketMedio)} • Gerado em ${new Date().toLocaleString("pt-BR")}`,
-      40,
-      94
-    );
+  const exportPDF = async () => {
+    if (!resultado || pdfLoading) return;
+    setPdfLoading(true);
+    try {
+      const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
+        import("jspdf"),
+        import("jspdf-autotable"),
+      ]);
+      const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+      const pageWidth = doc.internal.pageSize.getWidth();
 
-    autoTable(doc, {
-      startY: 112,
-      head: [[
-        "Cupom",
-        "Tipo",
-        "Resgatados",
-        "Utilizados",
-        "Conversão",
-        "Receita est. (R$)",
-        "Horário de pico",
-      ]],
-      body: resultado.map((r) => [
-        `${r.codigo}\n${r.nome}`,
-        r.tipo === "uso_unico" ? "Uso único" : "Recorrente",
-        String(r.resgatados),
-        String(r.utilizados),
-        r.conversaoLabel,
-        formatBRL(r.receitaEstimada),
-        r.melhorHorario,
-      ]),
-      styles: { font: "helvetica", fontSize: 10, cellPadding: 6 },
-      headStyles: { fillColor: [11, 34, 151], textColor: 255 },
-      alternateRowStyles: { fillColor: [248, 250, 252] },
-      margin: { left: 40, right: 40 },
-    });
+      // Cabeçalho
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("Relatório de Cupons", 40, 48);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(90);
+      doc.text(`${empresaParceira.nome} — CNPJ ${empresaParceira.cnpj}`, 40, 66);
+      doc.text(`Período: ${periodoLabel}`, 40, 80);
+      doc.text(
+        `Ticket médio (premissa): ${formatBRL(ticketMedio)} • Gerado em ${new Date().toLocaleString("pt-BR")}`,
+        40,
+        94
+      );
 
-    // Rodapé
-    const finalY = (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? 200;
-    doc.setFontSize(9);
-    doc.setTextColor(120);
-    doc.text(
-      "Receita estimada = ticket médio (premissa informada pelo parceiro) × cupons utilizados. Não representa venda real medida.",
-      40,
-      Math.min(finalY + 24, doc.internal.pageSize.getHeight() - 30),
-      { maxWidth: pageWidth - 80 }
-    );
+      autoTable(doc, {
+        startY: 112,
+        head: [[
+          "Cupom",
+          "Tipo",
+          "Resgatados",
+          "Utilizados",
+          "Conversão",
+          "Receita est. (R$)",
+          "Horário de pico",
+        ]],
+        body: resultado.map((r) => [
+          `${r.codigo}\n${r.nome}`,
+          r.tipo === "uso_unico" ? "Uso único" : "Recorrente",
+          String(r.resgatados),
+          String(r.utilizados),
+          r.conversaoLabel,
+          formatBRL(r.receitaEstimada),
+          r.melhorHorario,
+        ]),
+        styles: { font: "helvetica", fontSize: 10, cellPadding: 6 },
+        headStyles: { fillColor: [11, 34, 151], textColor: 255 },
+        alternateRowStyles: { fillColor: [248, 250, 252] },
+        margin: { left: 40, right: 40 },
+      });
 
-    doc.save(`relatorio-cupons-${Date.now()}.pdf`);
-    toast.success("PDF gerado");
+      // Rodapé
+      const finalY = (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? 200;
+      doc.setFontSize(9);
+      doc.setTextColor(120);
+      doc.text(
+        "Receita estimada = ticket médio (premissa informada pelo parceiro) × cupons utilizados. Não representa venda real medida.",
+        40,
+        Math.min(finalY + 24, doc.internal.pageSize.getHeight() - 30),
+        { maxWidth: pageWidth - 80 }
+      );
+
+      doc.save(`relatorio-cupons-${Date.now()}.pdf`);
+      toast.success("PDF gerado");
+    } catch (err) {
+      console.error(err);
+      toast.error("Falha ao gerar PDF");
+    } finally {
+      setPdfLoading(false);
+    }
   };
+
 
   const salvarAgenda = () => {
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
