@@ -326,8 +326,8 @@ export default function Relatorios() {
               <Button size="sm" variant="outline" onClick={exportCSV}>
                 <Download className="w-4 h-4 mr-2" /> CSV
               </Button>
-              <Button size="sm" variant="outline" onClick={exportPDF}>
-                <Download className="w-4 h-4 mr-2" /> PDF
+              <Button size="sm" variant="outline" onClick={exportPDF} disabled={pdfLoading}>
+                <Download className="w-4 h-4 mr-2" /> {pdfLoading ? "Gerando PDF..." : "PDF"}
               </Button>
             </div>
           </div>
