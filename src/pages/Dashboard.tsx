@@ -2,16 +2,14 @@ import {
   kpisDashboard,
   resgatesPorDia,
   resgatesPorHora,
-  perfilFaixaEtaria,
-  perfilTopCidades,
-  perfilAtividadePredominante,
   comparativoCupons,
   avaliacaoEstabelecimento,
   empresaParceira,
   cuponsData,
   type TipoCupom,
 } from "@/data/mockData";
-import { useUtilizados } from "@/hooks/useUtilizados";
+import { publicoDoCupom, publicoTodos, type PublicoAgregado } from "@/data/publicoPorCupom";
+import { useUtilizados, useUtilizadosLastUpdate } from "@/hooks/useUtilizados";
 import { useTicketMedio, formatBRL } from "@/hooks/useTicketMedio";
 import { GlassCard } from "@/components/GlassCard";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -49,6 +47,9 @@ import {
   AlertOctagon,
   Lightbulb,
   ArrowRight,
+  HelpCircle,
+  Send,
+  Info,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +57,26 @@ import { cn } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { gerarInsightsParceiro, type InsightItem } from "@/data/insightsParceiro";
+
+function HelpPopover({ children, ariaLabel }: { children: React.ReactNode; ariaLabel: string }) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          aria-label={ariaLabel}
+          className="w-6 h-6 rounded-md inline-flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+        >
+          <HelpCircle className="w-4 h-4" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-80 text-xs leading-relaxed">
+        {children}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 
 type DeltaKind = "pct" | "pp";
 
@@ -304,6 +325,167 @@ function InsightCard({ item, delay = 0 }: { item: InsightItem; delay?: number })
   );
 }
 
+function UpdateReminder() {
+  const lastUpdate = useUtilizadosLastUpdate();
+  const dias = lastUpdate
+    ? Math.floor((Date.now() - lastUpdate.getTime()) / (1000 * 60 * 60 * 24))
+    : null;
+  const precisa = lastUpdate === null || (dias !== null && dias >= 7);
+  if (!precisa) return null;
+  const msg =
+    lastUpdate === null
+      ? "Você ainda não atualizou os cupons utilizados."
+      : `Última atualização há ${dias} dias.`;
+  return (
+    <div className="glass-card rounded-xl px-4 py-3 ring-1 ring-accent/30 bg-accent/[0.05] flex items-start sm:items-center gap-3 flex-col sm:flex-row">
+      <div className="w-8 h-8 rounded-lg bg-accent/15 text-accent flex items-center justify-center shrink-0">
+        <Info className="w-4 h-4" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-foreground">
+          Atualize os cupons utilizados para manter os números precisos
+        </p>
+        <p className="text-xs text-muted-foreground">{msg}</p>
+      </div>
+      <Button asChild size="sm" variant="outline" className="h-8 text-xs shrink-0 self-end sm:self-auto">
+        <Link to="/cupons">
+          Atualizar agora <ArrowRight className="w-3.5 h-3.5 ml-1" />
+        </Link>
+      </Button>
+    </div>
+  );
+}
+
+function PerfilPublicoSection() {
+  const [escopo, setEscopo] = useState<string>("todos");
+  const cupomSel = cuponsData.find((c) => String(c.id) === escopo);
+  const publico: PublicoAgregado = useMemo(
+    () => (cupomSel ? publicoDoCupom(cupomSel) : publicoTodos()),
+    [cupomSel]
+  );
+  const faixaTop = [...publico.faixaEtaria].sort((a, b) => b.percentual - a.percentual)[0];
+  const cidadeTop = publico.topCidades[0];
+  const escopoLabel = cupomSel ? `do cupom "${cupomSel.nome}"` : "geral (todos os cupons)";
+
+  return (
+    <div>
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-3">
+        <div>
+          <h2 className="text-base sm:text-lg font-semibold text-foreground">
+            Perfil anonimizado do resgatador
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Dados agregados e anônimos, conforme LGPD. Sem identificação individual.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] text-muted-foreground whitespace-nowrap">Ver público de</span>
+          <Select value={escopo} onValueChange={setEscopo}>
+            <SelectTrigger className="h-8 text-xs w-[210px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos os cupons</SelectItem>
+              {cuponsData.map((c) => (
+                <SelectItem key={c.id} value={String(c.id)}>{c.nome}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {publico.amostraPequena && (
+        <div className="mb-3 text-[11px] text-muted-foreground bg-muted/40 rounded-md px-3 py-2">
+          Amostra pequena ({publico.amostra} resgates) — dados agregados, use com cautela.
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+        <GlassCard delay={500}>
+          <div className="flex items-center gap-2 mb-3">
+            <Users className="w-4 h-4 text-primary" />
+            <h4 className="text-sm font-semibold text-foreground">Faixa etária</h4>
+          </div>
+          <div className="space-y-2">
+            {publico.faixaEtaria.map((f) => (
+              <div key={f.faixa}>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-foreground">{f.faixa}</span>
+                  <span className="text-muted-foreground">{f.percentual}%</span>
+                </div>
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="h-full bg-primary" style={{ width: `${f.percentual}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard delay={600}>
+          <div className="flex items-center gap-2 mb-3">
+            <MapPin className="w-4 h-4 text-primary" />
+            <h4 className="text-sm font-semibold text-foreground">Top cidades</h4>
+          </div>
+          <ol className="space-y-3">
+            {publico.topCidades.map((c, i) => (
+              <li key={c.cidade} className="flex items-center gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
+                  {i + 1}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-foreground truncate">{c.cidade}</p>
+                  <p className="text-xs text-muted-foreground">{c.percentual}% dos resgates</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </GlassCard>
+
+        <GlassCard delay={700}>
+          <div className="flex items-center gap-2 mb-3">
+            <Activity className="w-4 h-4 text-primary" />
+            <h4 className="text-sm font-semibold text-foreground">Nível de atividade predominante</h4>
+          </div>
+          <p className="text-xs text-muted-foreground mb-3">
+            Agregado anônimo do grupo:
+          </p>
+          <div className="px-3 py-2 rounded-lg text-sm bg-primary/10 border border-primary/30 text-primary font-semibold flex items-center justify-between">
+            <span>{publico.atividadePredominante}</span>
+            <Badge variant="outline" className="bg-accent/10 text-accent border-accent/30 text-[10px]">
+              predominante
+            </Badge>
+          </div>
+        </GlassCard>
+      </div>
+
+      {/* Ponte público → ação */}
+      <GlassCard className="mt-4" delay={800}>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-lg bg-accent/15 text-accent flex items-center justify-center shrink-0">
+              <Lightbulb className="w-4.5 h-4.5" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-foreground">Como usar esse público</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Público {escopoLabel}: majoritariamente <span className="font-medium text-foreground">{faixaTop.faixa}</span>{" "}
+                em <span className="font-medium text-foreground">{cidadeTop.cidade}</span>, praticando{" "}
+                <span className="font-medium text-foreground">{publico.atividadePredominante}</span> —
+                considere ofertas alinhadas a esse perfil.
+              </p>
+            </div>
+          </div>
+          <Button asChild size="sm" className="bg-primary text-primary-foreground shrink-0">
+            <Link to="/solicitacoes">
+              <Send className="w-3.5 h-3.5 mr-1.5" /> Criar oferta
+            </Link>
+          </Button>
+        </div>
+      </GlassCard>
+    </div>
+  );
+}
+
 
 
 export default function Dashboard() {
@@ -364,15 +546,30 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-5 sm:space-y-8">
-      <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          {empresaParceira.nome} · Visão geral de desempenho dos seus cupons
-        </p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">
+            {empresaParceira.nome} · Visão geral de desempenho dos seus cupons
+          </p>
+        </div>
+        <HelpPopover ariaLabel="Entenda as métricas do funil">
+          <p className="font-semibold text-foreground mb-1">Entenda as métricas</p>
+          <p className="text-muted-foreground">
+            <span className="font-medium text-foreground">Resgatados</span> = cupons que o cliente pegou no app iRun.{" "}
+            <span className="font-medium text-foreground">Utilizados</span> = cupons efetivamente usados na sua plataforma (você
+            informa em Meus Cupons). A <span className="font-medium text-foreground">conversão</span> só é calculada em cupons de{" "}
+            <span className="font-medium">uso único</span>; nos <span className="font-medium">recorrentes</span> medimos usos por
+            usuário (recompra).
+          </p>
+        </HelpPopover>
       </div>
+
+      <UpdateReminder />
 
       {/* KPIs — Cupons utilizados + Faturamento estimado em destaque */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-4 sm:gap-5">
+
         <KpiCard
           label="Cupons utilizados"
           value={totalUtilizados.toLocaleString("pt-BR")}
@@ -476,84 +673,9 @@ export default function Dashboard() {
         </GlassCard>
       </div>
 
-      {/* Perfil Anonimizado */}
-      <div>
-        <h2 className="text-base sm:text-lg font-semibold text-foreground mb-3">
-          Perfil anonimizado do resgatador
-        </h2>
-        <p className="text-xs text-muted-foreground mb-4">
-          Dados agregados e anônimos, conforme LGPD.
-        </p>
+      {/* Perfil Anonimizado — SEGMENTÁVEL POR CUPOM (LGPD: só agregados) */}
+      <PerfilPublicoSection />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-          <GlassCard delay={500}>
-            <div className="flex items-center gap-2 mb-3">
-              <Users className="w-4 h-4 text-primary" />
-              <h4 className="text-sm font-semibold text-foreground">Faixa etária</h4>
-            </div>
-            <div className="space-y-2">
-              {perfilFaixaEtaria.map((f) => (
-                <div key={f.faixa}>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-foreground">{f.faixa}</span>
-                    <span className="text-muted-foreground">{f.percentual}%</span>
-                  </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div className="h-full bg-primary" style={{ width: `${f.percentual}%` }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </GlassCard>
-
-          <GlassCard delay={600}>
-            <div className="flex items-center gap-2 mb-3">
-              <MapPin className="w-4 h-4 text-primary" />
-              <h4 className="text-sm font-semibold text-foreground">Top 3 cidades</h4>
-            </div>
-            <ol className="space-y-3">
-              {perfilTopCidades.map((c, i) => (
-                <li key={c.cidade} className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
-                    {i + 1}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-foreground truncate">{c.cidade}</p>
-                    <p className="text-xs text-muted-foreground">{c.percentual}% dos resgates</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </GlassCard>
-
-          <GlassCard delay={700}>
-            <div className="flex items-center gap-2 mb-3">
-              <Activity className="w-4 h-4 text-primary" />
-              <h4 className="text-sm font-semibold text-foreground">Nível de atividade predominante</h4>
-            </div>
-            <p className="text-xs text-muted-foreground mb-3">
-              Escala iRun (agregado anônimo do grupo):
-            </p>
-            <div className="space-y-1.5">
-              {perfilAtividadePredominante.escala.map((nivel) => {
-                const ativo = nivel === perfilAtividadePredominante.predominante;
-                return (
-                  <div
-                    key={nivel}
-                    className={cn(
-                      "px-3 py-2 rounded-lg text-xs flex items-center justify-between",
-                      ativo ? "bg-primary/10 border border-primary/30 text-primary font-semibold" : "bg-muted/50 text-muted-foreground"
-                    )}
-                  >
-                    <span>{nivel}</span>
-                    {ativo && <Badge variant="outline" className="bg-accent/10 text-accent border-accent/30 text-[10px]">predominante</Badge>}
-                  </div>
-                );
-              })}
-            </div>
-          </GlassCard>
-        </div>
-      </div>
 
       {/* Comparativo + Conversão por cupom */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
